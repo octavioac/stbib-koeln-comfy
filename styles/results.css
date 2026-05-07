@@ -1,0 +1,465 @@
+/* Suchergebnisseite: rote Leisten, Trefferliste (#BrowseList / .browseList) */
+
+/*
+ * Portal nutzt oft feste Tabellenbreiten und <center> – Suchaussage, „Ergebnisse (n)“
+ * und Sortier-/Navigationsleiste sollen die volle Inhaltsspalte nutzen.
+ */
+#Contenu > table > tbody > tr > td:last-child {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#Contenu > table > tbody > tr > td:last-child > table {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#Contenu center {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
+  box-sizing: border-box !important;
+}
+
+/* Aktuelle Suche + „Suche ändern“ / „Neue Suche“ (gleiche Zelle, kein Überlappen) */
+.searchStatementBox,
+.SearchStatementBox {
+  background: #e8f2fc !important;
+  border: 1px solid #8fb4d9 !important;
+  border-radius: var(--stbib-radius-sm) !important;
+  padding: 0.75rem 1rem !important;
+  margin: 0.5rem 0 1rem !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.searchStatementBox table,
+.SearchStatementBox table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  table-layout: fixed !important;
+}
+
+.searchStatementBox table tr,
+.SearchStatementBox table tr {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.5rem 1rem !important;
+}
+
+.searchStatementBox .searchStatementLabel,
+.searchStatementBox .searchStatementCell,
+.SearchStatementBox .searchStatementLabel,
+.SearchStatementBox .searchStatementCell {
+  vertical-align: middle !important;
+  padding: 0 !important;
+  flex: 0 1 auto !important;
+}
+
+.searchStatementBox .searchStatementLabel,
+.SearchStatementBox .searchStatementLabel {
+  color: var(--stbib-text-muted) !important;
+  font-weight: 600 !important;
+}
+
+.searchStatementBox .searchStatementCell,
+.SearchStatementBox .searchStatementCell {
+  font-size: var(--stbib-fs-body) !important;
+  font-weight: 700 !important;
+  color: var(--stbib-text) !important;
+  flex: 1 1 12rem !important;
+  min-width: 0 !important;
+}
+
+.searchStatementBox .searchStatementModifyCell,
+.SearchStatementBox .searchStatementModifyCell {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0.5rem !important;
+  margin-left: auto !important;
+  align-self: center !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  min-width: 11rem !important;
+  max-width: 18rem !important;
+  padding: 0 !important;
+}
+
+.searchStatementBox .searchStatementModifyCell a.button,
+.SearchStatementBox .searchStatementModifyCell a.button {
+  width: 100% !important;
+  max-width: 18rem !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 720px) {
+  .searchStatementBox table tr,
+  .SearchStatementBox table tr {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .searchStatementBox .searchStatementModifyCell,
+  .SearchStatementBox .searchStatementModifyCell {
+    margin-left: 0 !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Kopfzeile Suchkontext */
+.searchHits {
+  color: var(--stbib-text) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.searchHits table {
+  width: 100% !important;
+}
+
+/* Ergebnisbereich: gleiche nutzbare Breite wie Sortierleiste / Treffer */
+.searchStatementBox,
+.SearchStatementBox,
+.searchHits,
+table.browseList,
+.SearchResultsHeader,
+.SearchResultsTrailer {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.SearchResultsHeader,
+.SearchResultsTrailer {
+  width: 100% !important;
+}
+
+.IndexHeadingCell,
+.IndexHeadingCellStripe {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Sortierzeile oben & unten */
+.SearchResultsHeader,
+.SearchResultsTrailer {
+  background-color: var(--stbib-bg-header-bar) !important;
+  border: none !important;
+  border-radius: var(--stbib-radius-sm) !important;
+  padding: 0.6rem 0.75rem !important;
+  margin: 0.5rem 0 !important;
+}
+
+.SearchResultsHeader table,
+.SearchResultsTrailer table {
+  width: 100% !important;
+}
+
+.SearchResultsHeaderSortCell,
+.SearchResultsTrailerSortCell {
+  vertical-align: middle !important;
+}
+
+.SearchResultsHeaderSortCell label,
+.SearchResultsTrailerSortCell label {
+  color: #fff !important;
+  font-size: var(--stbib-fs-small) !important;
+  margin-right: 0.5rem !important;
+}
+
+#SortCriteria,
+select.portalInOne {
+  min-height: var(--stbib-touch-min) !important;
+  max-width: 100% !important;
+}
+
+.SearchResultsPrintListCell,
+.SearchResultsEmailListCell,
+.ExportResultsCell {
+  vertical-align: middle !important;
+}
+
+.SearchResultsPageNavCell {
+  color: #fff !important;
+  font-size: var(--stbib-fs-small) !important;
+  vertical-align: middle !important;
+}
+
+.SearchResultsPageNavCell label {
+  color: #fff !important;
+  margin-right: 0.35rem !important;
+}
+
+.SearchResultsPageField {
+  width: 3.5rem !important;
+  text-align: center !important;
+  min-height: 2.5rem !important;
+}
+
+/* Treffer: Tabellen-Zeilen als Karten */
+table.browseList {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 0.85rem !important;
+  margin: 0.5rem 0 1.5rem !important;
+}
+
+table.browseList > tbody > tr {
+  background: var(--stbib-bg-card) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+  outline: 1px solid var(--stbib-border) !important;
+  border-radius: var(--stbib-radius) !important;
+  overflow: hidden !important;
+}
+
+table.browseList > tbody > tr > td {
+  padding: 0.85rem 0.6rem !important;
+  border: none !important;
+  vertical-align: top !important;
+  background: transparent !important;
+}
+
+/* Zeilennummer in Trefferliste ausblenden (Platz für Metadaten) */
+.SummaryPosInSetCell,
+.SummaryPosInSetCellStripe,
+.EMediaSummaryPosInSetCell,
+.EMediaSummaryPosInSetCellStripe {
+  display: none !important;
+  width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+}
+
+.SummaryMaterialTypeField {
+  font-size: var(--stbib-fs-meta) !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  margin-bottom: 0.35rem !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+.SummaryImageCell,
+.SummaryImageCellStripe {
+  width: 5.25rem !important;
+  min-width: 4.75rem !important;
+}
+
+.SummaryImageCell a.borderlessHref,
+.SummaryImageCellStripe a.borderlessHref {
+  display: block !important;
+}
+
+.SummaryImageCell > a > div,
+.SummaryImageCellStripe > a > div {
+  min-height: 7.5rem !important;
+  background-size: contain !important;
+}
+
+.SummaryDataCell,
+.SummaryDataCellStripe {
+  font-size: var(--stbib-fs-small) !important;
+}
+
+/* Titel/Verfasser/…: drei Spalten (Label | : | Wert) für saubere Ausrichtung */
+.SummaryDataCell > table > tbody > tr > td > table > tbody > tr,
+.SummaryDataCellStripe > table > tbody > tr > td > table > tbody > tr,
+.SummaryDataCell > table > tr > td > table > tbody > tr,
+.SummaryDataCellStripe > table > tr > td > table > tbody > tr,
+.SummaryDataCell > table > tr > td > table > tr,
+.SummaryDataCellStripe > table > tr > td > table > tr {
+  display: grid !important;
+  /* Schmale Label-Spalte, Doppelpunkt dicht, Wert nutzt Rest → kein „Luftloch“ */
+  grid-template-columns: minmax(4.5rem, 6.75rem) minmax(0.4rem, 0.65rem) minmax(0, 1fr) !important;
+  column-gap: 0.2rem !important;
+  row-gap: 0.05rem !important;
+  align-items: baseline !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.SummaryDataCell > table,
+.SummaryDataCellStripe > table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.SummaryDataCell table table tr > .SummaryFieldLegend,
+.SummaryDataCellStripe table table tr > .SummaryFieldLegend {
+  grid-column: 1 !important;
+  padding-right: 0 !important;
+}
+
+.SummaryDataCell table table tr > .SummaryFieldLegendSep,
+.SummaryDataCellStripe table table tr > .SummaryFieldLegendSep {
+  grid-column: 2 !important;
+  text-align: center !important;
+  padding: 0 !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+.SummaryDataCell table table tr > .SummaryFieldData,
+.SummaryDataCellStripe table table tr > .SummaryFieldData {
+  grid-column: 3 !important;
+}
+
+.SummaryFieldLegend {
+  font-size: var(--stbib-fs-meta) !important;
+  font-weight: 600 !important;
+  color: var(--stbib-text-muted) !important;
+  padding-right: 0 !important;
+  vertical-align: baseline !important;
+}
+
+.SummaryFieldData {
+  font-size: var(--stbib-fs-small) !important;
+  padding-bottom: 0.45rem !important;
+  vertical-align: baseline !important;
+}
+
+a.SummaryFieldLink {
+  /* Etwas kompakter als früheres --stbib-fs-title: weniger harte Zeilenumbrüche, klar lesbar */
+  font-size: calc(var(--stbib-fs-body) + 0.0625rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.42 !important;
+  letter-spacing: 0.01em !important;
+}
+
+a.SummaryFieldLink:hover {
+  text-decoration: underline !important;
+}
+
+.enlargeCoverLink:link,
+.enlargeCoverLink:visited {
+  font-size: var(--stbib-fs-meta) !important;
+  margin-top: 0.35rem !important;
+}
+
+/* Aktions-Spalte: kompakte „Panel“-Optik mit Trennlinien statt Einzelrahmen */
+table.browseList > tbody > tr > td[align="right"] {
+  vertical-align: top !important;
+  width: 14.5rem !important;
+  min-width: 12.5rem !important;
+  max-width: 17.5rem !important;
+}
+
+table.browseList > tbody > tr > td[align="right"] div[style*="height:20px"] {
+  display: none !important;
+}
+
+table.browseList > tbody > tr > td[align="right"] > div {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  padding: 0.35rem !important;
+  margin: 0 !important;
+  border-radius: var(--stbib-radius) !important;
+  background: var(--stbib-bg-card) !important;
+  border: 1px solid var(--stbib-border) !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.07) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Portal: Aktionslinks teils in innerem div */
+table.browseList > tbody > tr > td[align="right"] > div > div {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+table.browseList a.SummaryActionLink:link,
+table.browseList a.SummaryActionLink:visited {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+  float: none !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: 2.75rem !important;
+  padding: 0.55rem 0.6rem !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-bottom: 1px solid var(--stbib-border) !important;
+  background: transparent !important;
+  font-size: var(--stbib-fs-small) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  color: var(--stbib-text) !important;
+  text-decoration: none !important;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease !important;
+}
+
+table.browseList > tbody > tr > td[align="right"] > div > a.SummaryActionLink:last-child,
+table.browseList > tbody > tr > td[align="right"] > div a.SummaryActionLink:last-of-type {
+  border-bottom: none !important;
+}
+
+table.browseList a.SummaryActionLink:hover {
+  background: rgba(11, 92, 171, 0.07) !important;
+  color: var(--stbib-link) !important;
+}
+
+table.browseList a.SummaryActionLink img,
+table.browseList a.borderlessHref img {
+  flex-shrink: 0 !important;
+  vertical-align: middle !important;
+}
+
+table.browseList a.SummaryActionLink[style*="display:block"] {
+  display: flex !important;
+}
+
+table.browseList > tbody > tr > td[align="right"] br {
+  display: none !important;
+}
+
+table.browseList td table {
+  width: 100% !important;
+}
+
+@media (max-width: 700px) {
+  table.browseList > tbody > tr > td {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .SummaryPosInSetCell,
+  .SummaryPosInSetCellStripe {
+    text-align: left !important;
+    width: auto !important;
+  }
+
+  .SummaryImageCell,
+  .SummaryImageCellStripe {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}

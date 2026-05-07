@@ -1,0 +1,16 @@
+{
+  "name": "stbib-katalog-modern",
+  "private": true,
+  "version": "1.2.5",
+  "description": "Chrome-Erweiterung: Katalog Stadtbibliothek Köln komfortabler",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "pack": "node scripts/pack-extension.mjs",
+    "lint:webext": "web-ext lint -s . -i \"scripts/**\" -i \"tests/**\" -i \"playwright.config.ts\" -i \"package.json\" -i \"package-lock.json\""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "web-ext": "^8.3.0"
+  }
+}

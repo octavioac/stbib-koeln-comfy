@@ -1,0 +1,31 @@
+/* Stadtbibliothek Köln Katalog – Design-Tokens (v1, feste Skalierung) */
+
+:root {
+  /* Typography */
+  --stbib-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --stbib-font-serif: Georgia, "Times New Roman", serif;
+  --stbib-fs-body: 1rem;
+  --stbib-fs-small: 0.9375rem; /* 15px */
+  --stbib-fs-meta: 0.875rem; /* 14px min for secondary */
+  --stbib-fs-title: 1.125rem;
+  --stbib-fs-h1: 1.75rem;
+  --stbib-leading: 1.55;
+  --stbib-radius: 10px;
+  --stbib-radius-sm: 6px;
+
+  /* Colors – ruhiger Hintergrund, Bibliotheks-Rot nur akzentuiert */
+  --stbib-bg-page: #f4f5f7;
+  --stbib-bg-card: #ffffff;
+  --stbib-bg-header-bar: #b80918;
+  --stbib-border: #d8dee6;
+  --stbib-border-strong: #9aa7b8;
+  --stbib-text: #1a1d21;
+  --stbib-text-muted: #4a5563;
+  --stbib-link: #0b5cab;
+  --stbib-link-hover: #084a8f;
+  --stbib-focus: #2563eb;
+
+  /* Touch / interaction */
+  --stbib-touch-min: 44px;
+  --stbib-shadow-card: 0 2px 8px rgba(15, 23, 42, 0.08);
+}

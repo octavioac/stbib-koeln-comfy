@@ -1,0 +1,40 @@
+@media print {
+  #toolBar,
+  #Entete,
+  #leftMenuContainer,
+  .FacetBox,
+  .FacetBoxHeader,
+  .FacetsContainer,
+  #Aide,
+  #customFooter,
+  #PdP {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    font-size: 12pt !important;
+  }
+
+  #contentContainer {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  table.browseList > tbody > tr {
+    box-shadow: none !important;
+    outline: none !important;
+    break-inside: avoid !important;
+  }
+
+  .SearchResultsHeader,
+  .SearchResultsTrailer {
+    background: #eee !important;
+    color: #000 !important;
+  }
+
+  .SearchResultsPageNavCell label,
+  .printListLink:link {
+    color: #000 !important;
+  }
+}

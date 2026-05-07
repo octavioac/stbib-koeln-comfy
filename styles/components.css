@@ -1,0 +1,199 @@
+/* Gemeinsame Bausteine: Facetten, Aussagekasten, allgemeine Panel-Optik */
+
+.FacetBoxHeader {
+  font-size: var(--stbib-fs-small) !important;
+  font-weight: 700 !important;
+  color: var(--stbib-text) !important;
+  /* Portal-JS setzt u. U. margin-top für Sidebar – über der Liste nicht nötig */
+  margin-top: 0 !important;
+  margin-bottom: 0.35rem !important;
+  padding: 0.4rem 0 !important;
+  letter-spacing: 0.02em !important;
+}
+
+#leftMenuContainer .FacetBox {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 0.65rem !important;
+  align-items: start !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 1200px) {
+  #leftMenuContainer .FacetBox {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  #leftMenuContainer .FacetBox {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #leftMenuContainer .FacetBox {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  #leftMenuContainer .FacetBox {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.stbib-facet-tile {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  background: var(--stbib-bg-card) !important;
+  border: 1px solid var(--stbib-border) !important;
+  border-radius: var(--stbib-radius) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+  padding: 0.35rem 0.45rem 0.45rem !important;
+  box-sizing: border-box !important;
+}
+
+.stbib-facet-tile .FacetHeader {
+  flex-shrink: 0 !important;
+  margin-bottom: 0.15rem !important;
+}
+
+.stbib-facet-tile .FacetsList {
+  max-height: 12rem !important;
+}
+
+.FacetBox:not(:has(.stbib-facet-tile)) {
+  background: var(--stbib-bg-card) !important;
+  border: 1px solid var(--stbib-border) !important;
+  border-radius: var(--stbib-radius) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+  padding: 0.4rem 0.55rem 0.65rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* Portal: Text in float:left-Div, Pfeil float:right – zu Flex mit Abstand */
+.FacetHeader {
+  font-size: var(--stbib-fs-small) !important;
+  font-weight: 700 !important;
+  color: var(--stbib-text) !important;
+  padding: 0.45rem 0.55rem !important;
+  min-height: 2.25rem !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.65rem !important;
+  cursor: pointer !important;
+  border-radius: var(--stbib-radius-sm) !important;
+  background: linear-gradient(180deg, #f3f5f7 0%, #e8ecf0 100%) !important;
+  border: 1px solid var(--stbib-border) !important;
+  margin-bottom: 0.2rem !important;
+  box-sizing: border-box !important;
+}
+
+.FacetHeader > div[style*="float:left"] {
+  float: none !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.FacetHeader img {
+  float: none !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  align-self: center !important;
+}
+
+.FacetHeader > div[style*="clear:both"] {
+  display: none !important;
+}
+
+.FacetHeader:hover {
+  background: linear-gradient(180deg, #eef2f6 0%, #dfe6ee 100%) !important;
+}
+
+/* Facetten-Links: untereinander wie Original, gut lesbar */
+.FacetLink {
+  display: block !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.FacetLinkA:link,
+.FacetLinkA:visited {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  font-size: var(--stbib-fs-small) !important;
+  line-height: var(--stbib-leading) !important;
+  padding: 0.35rem 0.3rem !important;
+  min-height: 0 !important;
+  border-radius: var(--stbib-radius-sm) !important;
+}
+
+.FacetLinkA:hover {
+  background: #eef6ff !important;
+}
+
+.FacetCount {
+  font-size: 0.8125rem !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+/* „Einschränken der Suche“: scrollbare lange Listen */
+.FacetsList {
+  max-height: 50vh !important;
+  overflow-y: auto !important;
+  padding: 0.15rem 0.2rem 0.15rem 0 !important;
+  font-size: var(--stbib-fs-small) !important;
+}
+
+.searchLimits,
+.limitCell,
+.dateLimitCell {
+  font-size: var(--stbib-fs-meta) !important;
+}
+
+.searchLimits {
+  border-radius: var(--stbib-radius) !important;
+  padding: 0.75rem !important;
+  border-color: var(--stbib-border) !important;
+}
+
+.SearchStatementBox,
+.searchHits {
+  font-size: var(--stbib-fs-body) !important;
+  font-weight: 600 !important;
+  margin: 0.75rem 0 !important;
+}
+
+.searchHits table {
+  width: 100% !important;
+}
+
+.IndexHeadingCell,
+.IndexHeadingCellStripe {
+  font-size: var(--stbib-fs-body) !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.printListLink:link,
+.printListLink:visited,
+.pageNavLink:link,
+.pageNavLink:visited {
+  color: #fff !important;
+  font-size: var(--stbib-fs-small) !important;
+  text-decoration: underline !important;
+  padding: 0.35rem 0.25rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 2.25rem !important;
+}

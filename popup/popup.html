@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img class="logo" src="../icons/icon32.png" width="32" height="32" alt="" />
+      <div>
+        <h1>Stadtbibliothek Köln</h1>
+        <p class="subtitle">Katalog komfortabler</p>
+      </div>
+    </header>
+
+    <section class="panel" aria-labelledby="section-modern-label">
+      <h2 id="section-modern-label" class="visually-hidden">Darstellung</h2>
+      <label class="switch-row" for="stbib-toggle">
+        <span class="switch-label">Komfort-Design aktivieren</span>
+        <span class="switch">
+          <input type="checkbox" id="stbib-toggle" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+
+      <label class="switch-row switch-row--spaced" for="stbib-toggle-dark">
+        <span class="switch-label">Dunkles Design</span>
+        <span class="switch">
+          <input type="checkbox" id="stbib-toggle-dark" />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+    </section>
+
+    <p class="hint">
+      Nach dem Umschalten ggf. die Katalog-Seite neu laden (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> /
+      <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>).
+    </p>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

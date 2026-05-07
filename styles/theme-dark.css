@@ -1,0 +1,304 @@
+/* Dunkles Erscheinungsbild – nur aktiv bei html[data-stbib-theme="dark"] */
+
+html[data-stbib-theme="dark"] {
+  --stbib-bg-page: #131416;
+  --stbib-bg-card: #1c2024;
+  --stbib-bg-header-bar: #a20d18;
+  --stbib-border: #343a43;
+  --stbib-border-strong: #5c6573;
+  --stbib-text: #e8eaed;
+  /* Etwas heller für Sekundärtext auf dunklen Karten (WCAG-näher zu AA) */
+  --stbib-text-muted: #b9c5d4;
+  /* Kräftigeres Hellblau/Cyan für Links auf dunklem Grund */
+  --stbib-link: #8ec8ff;
+  --stbib-link-hover: #b9e0ff;
+  --stbib-focus: #60a5fa;
+  --stbib-shadow-card: 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* Basishintergrund sicher setzen (gegen Portal-Attribute) */
+html[data-stbib-theme="dark"] body {
+  background-color: var(--stbib-bg-page) !important;
+}
+
+/*
+ * Seiten-Schale: #contentContainer + #Principal = Seitenhintergrund (kein Weiß durchscheinen).
+ * #ColCentre / #pageContent / #leftMenuContainer bleiben transparent und liegen auf dem Seitenhintergrund.
+ */
+html[data-stbib-theme="dark"] #contentContainer,
+html[data-stbib-theme="dark"] #Principal,
+html[data-stbib-theme="dark"] div#Principal {
+  background-color: var(--stbib-bg-page) !important;
+  background-image: none !important;
+}
+
+html[data-stbib-theme="dark"] #ColCentre,
+html[data-stbib-theme="dark"] #ColCentre #pageContent,
+html[data-stbib-theme="dark"] #pageContent,
+html[data-stbib-theme="dark"] #leftMenuContainer {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] #Entete {
+  background-color: var(--stbib-bg-card) !important;
+  border-bottom-color: var(--stbib-bg-header-bar) !important;
+}
+
+html[data-stbib-theme="dark"] #toolBar {
+  background: linear-gradient(180deg, #22262c 0%, #1a1d22 100%) !important;
+  background-color: #1e2228 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Portal: Toolbar in Zellen / Listen mit hellem Hintergrund */
+html[data-stbib-theme="dark"] #toolBar table,
+html[data-stbib-theme="dark"] #toolBar tbody,
+html[data-stbib-theme="dark"] #toolBar tr,
+html[data-stbib-theme="dark"] #toolBar td,
+html[data-stbib-theme="dark"] #toolBar th,
+html[data-stbib-theme="dark"] #toolBar ul,
+html[data-stbib-theme="dark"] #toolBar li {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+html[data-stbib-theme="dark"] .leftNavButton:hover,
+html[data-stbib-theme="dark"] #toolBar li > a:hover:not(.button):not(.button_blue):not(.button_gray),
+html[data-stbib-theme="dark"]
+  #toolBar
+  td
+  a:hover:not(.leftNavButton):not(.button):not(.button_blue):not(.button_gray) {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] .MenuQuickSearch.hi .leftNavButton,
+html[data-stbib-theme="dark"] .leftNavButton.hi,
+html[data-stbib-theme="dark"] li.hi .leftNavButton,
+html[data-stbib-theme="dark"] #toolBar li.hi > a:not(.button):not(.button_blue):not(.button_gray),
+html[data-stbib-theme="dark"] #toolBar .MenuQuickSearch.hi a:not(.button):not(.button_blue):not(.button_gray) {
+  background-color: rgba(162, 13, 24, 0.28) !important;
+  color: var(--stbib-text) !important;
+  border-color: rgba(232, 80, 92, 0.35) !important;
+  box-shadow: 0 1px 0 rgba(162, 13, 24, 0.35) !important;
+}
+
+html[data-stbib-theme="dark"] .FacetBoxHeader {
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] input[type="text"],
+html[data-stbib-theme="dark"] input[type="search"],
+html[data-stbib-theme="dark"] input[type="number"],
+html[data-stbib-theme="dark"] input.RechTxt,
+html[data-stbib-theme="dark"] .SearchResultsPageField,
+html[data-stbib-theme="dark"] textarea,
+html[data-stbib-theme="dark"] select.portalInOne,
+html[data-stbib-theme="dark"] select {
+  background-color: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border-strong) !important;
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] #leftMenuContainer .FacetBox {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html[data-stbib-theme="dark"] .stbib-facet-tile {
+  background: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+}
+
+html[data-stbib-theme="dark"] .FacetBox:not(:has(.stbib-facet-tile)) {
+  background: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+}
+
+html[data-stbib-theme="dark"] .FacetHeader {
+  background: linear-gradient(180deg, #2a3038 0%, #23282f 100%) !important;
+  border-color: var(--stbib-border) !important;
+}
+
+html[data-stbib-theme="dark"] .FacetHeader:hover {
+  background: linear-gradient(180deg, #323945 0%, #2a3038 100%) !important;
+}
+
+html[data-stbib-theme="dark"] .FacetLinkA:hover {
+  background: rgba(126, 180, 247, 0.12) !important;
+}
+
+html[data-stbib-theme="dark"] .searchLimits {
+  border-color: var(--stbib-border) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+html[data-stbib-theme="dark"] .searchStatementBox,
+html[data-stbib-theme="dark"] .SearchStatementBox {
+  background-color: rgba(30, 58, 95, 0.55) !important;
+  border-color: rgba(100, 149, 200, 0.45) !important;
+}
+
+html[data-stbib-theme="dark"] .Exemple {
+  background: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+}
+
+html[data-stbib-theme="dark"] .Exemple p + p {
+  border-top-color: var(--stbib-border) !important;
+}
+
+html[data-stbib-theme="dark"] .SearchResultsHeader,
+html[data-stbib-theme="dark"] .SearchResultsTrailer {
+  background-color: var(--stbib-bg-header-bar) !important;
+}
+
+html[data-stbib-theme="dark"] table.browseList > tbody > tr {
+  background-color: var(--stbib-bg-card) !important;
+  outline-color: var(--stbib-border) !important;
+  box-shadow: var(--stbib-shadow-card) !important;
+}
+
+/* Portal setzt auf Zellen oft bgcolor/#fff – Kartenfarbe kommt von der Zeile */
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/*
+ * Layout-Tabellen (ohne Trefferliste): Portal-bgcolor/#fff auf Zellen entfernen.
+ * #Contenu > … > td = Filter-/Ergebnis-Spalten der äußeren Ergebnis-Tabelle.
+ */
+html[data-stbib-theme="dark"] #Contenu > table > tbody > tr > td,
+html[data-stbib-theme="dark"] #Contenu table:not(.browseList) > tbody > tr > td,
+html[data-stbib-theme="dark"] #pageContent table:not(.browseList) > tbody > tr > td {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div {
+  background-color: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Gegen helles bgcolor/#fff im Aktions-Panel (Portal-Inline) */
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"][bgcolor],
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div[bgcolor],
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div[style*="background"] {
+  background-color: var(--stbib-bg-card) !important;
+  background-image: none !important;
+}
+
+html[data-stbib-theme="dark"] table.browseList a.SummaryActionLink,
+html[data-stbib-theme="dark"] table.browseList a.SummaryActionLink:link,
+html[data-stbib-theme="dark"] table.browseList a.SummaryActionLink:visited {
+  color: var(--stbib-text) !important;
+  background: transparent !important;
+  border-color: var(--stbib-border) !important;
+  border-bottom-color: var(--stbib-border) !important;
+}
+
+html[data-stbib-theme="dark"] table.browseList a.SummaryActionLink:hover {
+  background: rgba(126, 180, 247, 0.12) !important;
+  color: var(--stbib-link) !important;
+}
+
+/* Überschriften & Suchkontext: explizit (gegen Portal-Inlinefarben) */
+html[data-stbib-theme="dark"] .titleText,
+html[data-stbib-theme="dark"] .titleText1,
+html[data-stbib-theme="dark"] .heading {
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] .searchHits,
+html[data-stbib-theme="dark"] .searchHits table,
+html[data-stbib-theme="dark"] .searchHits tbody,
+html[data-stbib-theme="dark"] .searchHits tr,
+html[data-stbib-theme="dark"] .searchHits td,
+html[data-stbib-theme="dark"] .searchHits th {
+  color: var(--stbib-text) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Trefferkarten-Metadaten auf dunklem Kartenhintergrund */
+html[data-stbib-theme="dark"] .SummaryFieldData {
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] .SummaryFieldLegend,
+html[data-stbib-theme="dark"] .SummaryMaterialTypeField,
+html[data-stbib-theme="dark"] .SummaryDataCell table table tr > .SummaryFieldLegendSep {
+  color: var(--stbib-text-muted) !important;
+}
+
+html[data-stbib-theme="dark"] a.SummaryFieldLink:link,
+html[data-stbib-theme="dark"] a.SummaryFieldLink:visited {
+  color: var(--stbib-link) !important;
+}
+
+html[data-stbib-theme="dark"] a.SummaryFieldLink:hover {
+  color: var(--stbib-link-hover) !important;
+}
+
+html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div > div {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Volle Breite / center-Wrapper aus results.css – kein heller Kasten */
+html[data-stbib-theme="dark"] #Contenu center {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Häufige Legacy-bgcolor im Layout (nicht in Treffertabelle) */
+html[data-stbib-theme="dark"] #contentContainer table:not(.browseList) [bgcolor],
+html[data-stbib-theme="dark"] #Principal table:not(.browseList) [bgcolor] {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+html[data-stbib-theme="dark"] #titleContainer2 {
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] .IndexHeadingCell,
+html[data-stbib-theme="dark"] .IndexHeadingCellStripe {
+  color: var(--stbib-text) !important;
+}
+
+/* Roter Sortier-/Navigationsbalken: Druck-/Seiten-Links bleiben hell; Selects lesbar */
+html[data-stbib-theme="dark"] #SortCriteria,
+html[data-stbib-theme="dark"] .SearchResultsHeader select,
+html[data-stbib-theme="dark"] .SearchResultsTrailer select {
+  color: var(--stbib-text) !important;
+  background-color: rgba(22, 26, 32, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+html[data-stbib-theme="dark"] a.button_blue,
+html[data-stbib-theme="dark"] a.button_blue:link,
+html[data-stbib-theme="dark"] a.button_blue:visited {
+  background-color: #2c3440 !important;
+  color: var(--stbib-text) !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
+html[data-stbib-theme="dark"] a.button_gray,
+html[data-stbib-theme="dark"] a.button_gray:link,
+html[data-stbib-theme="dark"] a.button_gray:visited {
+  background-color: #323a44 !important;
+  color: var(--stbib-text) !important;
+  border-color: var(--stbib-border-strong) !important;
+}

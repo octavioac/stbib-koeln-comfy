@@ -1,0 +1,159 @@
+/* Globale Typo, Links, Formular-Grundlagen (alle Portal3-Seiten) */
+
+html {
+  font-family: var(--stbib-font-sans) !important;
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--stbib-font-sans) !important;
+  font-size: var(--stbib-fs-body) !important;
+  line-height: var(--stbib-leading) !important;
+  color: var(--stbib-text) !important;
+  background-color: var(--stbib-bg-page) !important;
+}
+
+/* Legacy-Klassen aus Portal-Templates */
+.data,
+.label,
+.heading,
+.SummaryFieldData,
+.SummaryFieldLegend,
+.SummaryMaterialTypeField,
+.limitBoxLabel,
+.limitCell,
+.FacetCount,
+.FacetLinkA:link,
+.FacetLinkA:visited {
+  font-family: var(--stbib-font-sans) !important;
+}
+
+.data,
+.label {
+  font-size: var(--stbib-fs-small) !important;
+}
+
+.heading,
+.titleText,
+.titleText1 {
+  font-family: var(--stbib-font-sans) !important;
+  font-size: var(--stbib-fs-h1) !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: var(--stbib-text) !important;
+}
+
+/* Links */
+a:link,
+a:visited {
+  color: var(--stbib-link) !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--stbib-link-hover) !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--stbib-focus) !important;
+  outline-offset: 2px !important;
+}
+
+/* Eingabefelder */
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input.RechTxt,
+.SearchResultsPageField,
+textarea,
+select.portalInOne,
+select {
+  font-family: var(--stbib-font-sans) !important;
+  font-size: var(--stbib-fs-body) !important;
+  min-height: var(--stbib-touch-min) !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: var(--stbib-radius-sm) !important;
+  border: 1px solid var(--stbib-border-strong) !important;
+  background-color: #fff !important;
+  color: var(--stbib-text) !important;
+  box-sizing: border-box !important;
+}
+
+/* Button-Links: Portal „Sliding Doors“ (float, height:20px, span-GIFs) vollständig neutralisieren */
+a.button,
+a.button:link,
+a.button:visited,
+a.button_blue,
+a.button_blue:link,
+a.button_blue:visited,
+a.button_gray,
+a.button_gray:link,
+a.button_gray:visited {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  float: none !important;
+  clear: both !important;
+  height: auto !important;
+  min-height: var(--stbib-touch-min) !important;
+  margin: 0 0.35rem 0.35rem 0 !important;
+  padding: 0.55rem 1.15rem !important;
+  font-family: var(--stbib-font-sans) !important;
+  font-weight: 600 !important;
+  font-size: var(--stbib-fs-small) !important;
+  line-height: 1.3 !important;
+  text-decoration: none !important;
+  border-radius: var(--stbib-radius-sm) !important;
+  border: 1px solid transparent !important;
+  background: none !important;
+  background-image: none !important;
+  background-color: #e47100 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+a.button span,
+a.button_blue span,
+a.button_gray span {
+  display: inline !important;
+  background: none !important;
+  background-image: none !important;
+  color: inherit !important;
+  font: inherit !important;
+  line-height: inherit !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  white-space: normal !important;
+}
+
+a.button_blue,
+a.button_blue:link,
+a.button_blue:visited {
+  background-color: #e8eef5 !important;
+  color: var(--stbib-text) !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
+a.button_gray,
+a.button_gray:link,
+a.button_gray:visited {
+  background-color: #eef1f4 !important;
+  color: var(--stbib-text) !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
+a.button:hover,
+a.button_blue:hover {
+  filter: brightness(1.05);
+}
+
+a.button span font,
+a.button_blue span font {
+  color: inherit !important;
+}

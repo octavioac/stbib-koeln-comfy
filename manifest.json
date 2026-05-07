@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Stadtbibliothek Köln – Katalog komfortabler",
+  "version": "1.2.5",
+  "description": "Größere Schrift, bessere Abstände und klarere Trefferliste für den Online-Katalog der Stadtbibliothek Köln (nur Darstellung). Per Popup ein- und ausschaltbar.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "stbib-katalog-modern@local.extension",
+      "strict_min_version": "115.0"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Stadtbibliothek: Katalog-Ansicht",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://katalog.stbib-koeln.de/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "styles/tokens.css",
+        "styles/base.css",
+        "styles/layout.css",
+        "styles/components.css",
+        "styles/results.css",
+        "styles/print.css",
+        "styles/theme-dark.css"
+      ],
+      "matches": ["https://katalog.stbib-koeln.de/*"]
+    }
+  ]
+}
