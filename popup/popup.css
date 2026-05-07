@@ -66,8 +66,22 @@ h1 {
   user-select: none;
 }
 
-.switch-row--spaced {
+.dark-mode-block {
   margin-top: 10px;
+}
+
+.switch-caption {
+  margin: 6px 14px 0;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.switch-caption strong {
+  font-weight: 600;
+  color: #475569;
 }
 
 .switch-label {
@@ -145,8 +159,13 @@ body.popup--dark {
 }
 
 body.popup--dark .subtitle,
-body.popup--dark .hint {
+body.popup--dark .hint,
+body.popup--dark .switch-caption {
   color: #94a3b8;
+}
+
+body.popup--dark .switch-caption strong {
+  color: #cbd5e1;
 }
 
 body.popup--dark .switch-row {

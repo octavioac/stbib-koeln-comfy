@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Stadtbibliothek Köln – Katalog komfortabler",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "description": "Größere Schrift, bessere Abstände und klarere Trefferliste für den Online-Katalog der Stadtbibliothek Köln (nur Darstellung). Per Popup ein- und ausschaltbar.",
   "browser_specific_settings": {
     "gecko": {

@@ -20,6 +20,7 @@ div#Principal {
   background-color: #fff !important;
   height: auto !important;
   min-height: 120px;
+  margin-bottom: 0 !important;
 }
 
 #Entete .logo {
@@ -30,8 +31,10 @@ div#Principal {
 #toolBar {
   min-height: calc(var(--stbib-touch-min) + 10px) !important;
   height: auto !important;
+  margin-top: 0.5rem !important;
   font-family: var(--stbib-font-sans) !important;
   background: linear-gradient(180deg, #fafbfc 0%, #f4f5f7 100%) !important;
+  border: none !important;
   border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
   box-shadow: inset 0 -1px 0 rgba(255, 253, 253, 0.65) !important;
 }
@@ -42,8 +45,12 @@ div#Principal {
   border-collapse: collapse !important;
   border-spacing: 0 !important;
   margin: 0 !important;
+  border: none !important;
+  border-width: 0 !important;
   background: transparent !important;
   background-image: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 #toolBar tbody,
@@ -56,12 +63,35 @@ div#Principal {
 #toolBar td,
 #toolBar th {
   border: none !important;
+  border-width: 0 !important;
   border-right: none !important;
   border-left: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  border-inline: none !important;
+  border-block: none !important;
   background: transparent !important;
   background-image: none !important;
   padding: 0 !important;
   vertical-align: middle !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#toolBar td::before,
+#toolBar td::after,
+#toolBar th::before,
+#toolBar th::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#toolBar hr {
+  display: none !important;
+  border: none !important;
+  margin: 0 !important;
 }
 
 #toolBar ul {
@@ -71,13 +101,17 @@ div#Principal {
   gap: 0.35rem 0.5rem !important;
   list-style: none !important;
   margin: 0 !important;
-  padding: 0.45rem 0.85rem 0.5rem !important;
+  padding: 0.7rem 0.85rem 0.65rem !important;
 }
 
 #toolBar li {
   float: none !important;
   flex: 0 1 auto !important;
   border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  outline: none !important;
   background: transparent !important;
 }
 
@@ -131,6 +165,125 @@ div#Principal {
 li.hi .leftNavButton,
 #toolBar li.hi > a:not(.button):not(.button_blue):not(.button_gray),
 #toolBar .MenuQuickSearch.hi a:not(.button):not(.button_blue):not(.button_gray) {
+  background: rgba(184, 9, 24, 0.09) !important;
+  color: var(--stbib-text) !important;
+  border-color: rgba(184, 9, 24, 0.2) !important;
+  box-shadow: 0 1px 0 rgba(184, 9, 24, 0.12) !important;
+}
+
+/*
+ * Portal3 / Iris (STBIB): Hauptnav ist #ZoneMenu mit float + border-left pro <li> (Iris09.css).
+ * #toolBar greift hier nicht – eigene Modernisierung wie bei der Toolbar.
+ */
+#ZoneMenu {
+  position: relative !important;
+  overflow: visible !important;
+  width: 100% !important;
+  margin-top: 0.85rem !important;
+  margin-bottom: 0.65rem !important;
+  font-family: var(--stbib-font-sans) !important;
+  background: linear-gradient(180deg, #fafbfc 0%, #f4f5f7 100%) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
+  border-radius: 0 0 var(--stbib-radius-sm) var(--stbib-radius-sm) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 253, 253, 0.65) !important;
+}
+
+#ZoneMenu ul {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.2rem 0.35rem !important;
+  margin: 0 !important;
+  padding: 0.65rem 0.65rem 0.7rem !important;
+  list-style: none !important;
+  float: none !important;
+}
+
+#ZoneMenu li {
+  float: none !important;
+  width: auto !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  list-style: none !important;
+  font-size: var(--stbib-fs-small) !important;
+  font-weight: 500 !important;
+  color: var(--stbib-text-muted) !important;
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+}
+
+#ZoneMenu li.Inactif {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-right: none !important;
+}
+
+#ZoneMenu li.LiDossier,
+#ZoneMenu li.LiDossier0 {
+  float: none !important;
+  margin-left: auto !important;
+  width: auto !important;
+  min-width: max-content !important;
+  background: transparent !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+#ZoneMenu li a:link,
+#ZoneMenu li a:visited {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: min(100%, 5.5rem) !important;
+  min-height: var(--stbib-touch-min) !important;
+  height: auto !important;
+  padding: 0.45rem 0.85rem !important;
+  font-family: var(--stbib-font-sans) !important;
+  font-size: var(--stbib-fs-small) !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.3 !important;
+  color: var(--stbib-text-muted) !important;
+  text-decoration: none !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  background-image: none !important;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease !important;
+}
+
+#ZoneMenu li a > div {
+  display: inline !important;
+  text-decoration: none !important;
+}
+
+#ZoneMenu li a:hover {
+  color: var(--stbib-text) !important;
+  background: rgba(15, 23, 42, 0.045) !important;
+}
+
+#ZoneMenu li a:hover span {
+  text-decoration: none !important;
+}
+
+#ZoneMenu li.Encours {
+  background: transparent !important;
+}
+
+#ZoneMenu li.Encours a:link,
+#ZoneMenu li.Encours a:visited {
   background: rgba(184, 9, 24, 0.09) !important;
   color: var(--stbib-text) !important;
   border-color: rgba(184, 9, 24, 0.2) !important;
@@ -331,14 +484,27 @@ li.hi .leftNavButton,
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding-left: 0.45rem !important;
-    padding-right: 0.45rem !important;
+    padding: 0.7rem 0.45rem 0.65rem !important;
   }
 
   .leftNavButton,
   .leftNavButton:hover,
   #toolBar li > a:not(.button):not(.button_blue):not(.button_gray),
   #toolBar td a:not(.button):not(.button_blue):not(.button_gray) {
+    min-width: max-content !important;
+    white-space: nowrap !important;
+  }
+
+  #ZoneMenu ul {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-left: 0.45rem !important;
+    padding-right: 0.45rem !important;
+  }
+
+  #ZoneMenu li a:link,
+  #ZoneMenu li a:visited {
     min-width: max-content !important;
     white-space: nowrap !important;
   }

@@ -47,9 +47,11 @@ html[data-stbib-theme="dark"] #Entete {
 }
 
 html[data-stbib-theme="dark"] #toolBar {
+  margin-top: 0.5rem !important;
   background: linear-gradient(180deg, #22262c 0%, #1a1d22 100%) !important;
   background-color: #1e2228 !important;
-  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
 }
 
@@ -64,6 +66,26 @@ html[data-stbib-theme="dark"] #toolBar li {
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+html[data-stbib-theme="dark"] #toolBar td::before,
+html[data-stbib-theme="dark"] #toolBar td::after,
+html[data-stbib-theme="dark"] #toolBar th::before,
+html[data-stbib-theme="dark"] #toolBar th::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+html[data-stbib-theme="dark"] #toolBar hr {
+  display: none !important;
+  border: none !important;
 }
 
 html[data-stbib-theme="dark"] .leftNavButton:hover,
@@ -81,6 +103,49 @@ html[data-stbib-theme="dark"] .leftNavButton.hi,
 html[data-stbib-theme="dark"] li.hi .leftNavButton,
 html[data-stbib-theme="dark"] #toolBar li.hi > a:not(.button):not(.button_blue):not(.button_gray),
 html[data-stbib-theme="dark"] #toolBar .MenuQuickSearch.hi a:not(.button):not(.button_blue):not(.button_gray) {
+  background-color: rgba(162, 13, 24, 0.28) !important;
+  color: var(--stbib-text) !important;
+  border-color: rgba(232, 80, 92, 0.35) !important;
+  box-shadow: 0 1px 0 rgba(162, 13, 24, 0.35) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu {
+  margin-top: 0.85rem !important;
+  background: linear-gradient(180deg, #22262c 0%, #1a1d22 100%) !important;
+  background-color: #1e2228 !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu ul,
+html[data-stbib-theme="dark"] #ZoneMenu li {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu li.LiDossier,
+html[data-stbib-theme="dark"] #ZoneMenu li.LiDossier0 {
+  background: transparent !important;
+  color: var(--stbib-text-muted) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu li a:link,
+html[data-stbib-theme="dark"] #ZoneMenu li a:visited {
+  color: var(--stbib-text-muted) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu li a:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] #ZoneMenu li.Encours a:link,
+html[data-stbib-theme="dark"] #ZoneMenu li.Encours a:visited {
   background-color: rgba(162, 13, 24, 0.28) !important;
   color: var(--stbib-text) !important;
   border-color: rgba(232, 80, 92, 0.35) !important;
