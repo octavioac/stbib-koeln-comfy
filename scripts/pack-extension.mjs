@@ -12,7 +12,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const OUT = "stbib-katalog-modern.zip";
 
-const entries = ["manifest.json", "README.md", "content.js", "popup", "styles", "icons"];
+const entries = [
+  "manifest.json",
+  "README.md",
+  "content.js",
+  "src",
+  "popup",
+  "styles",
+  "icons",
+];
 
 if (existsSync(path.join(ROOT, OUT))) {
   unlinkSync(path.join(ROOT, OUT));

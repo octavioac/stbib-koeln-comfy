@@ -47,6 +47,29 @@
   }
 }
 
+/*
+ * Geöffnete Facette darf mehrere Spalten belegen: Autor, Verlag und Schlagwort
+ * liefern lange Werte („A. F. Steadman ; aus dem Englischen von …“), die in
+ * einer Fünftel-Spalte unlesbar umbrechen.
+ *
+ * `arrow_down` am Header bedeutet „zu“ – das Portal-JS entfernt die Klasse
+ * beim Aufklappen. Ohne `:has()`-Unterstützung bleibt die Kachel schmal
+ * (funktioniert weiterhin, nur enger).
+ */
+#leftMenuContainer .FacetBox .stbib-facet-tile:has(> .FacetHeader:not(.arrow_down)) {
+  grid-column: span 3 !important;
+}
+
+#leftMenuContainer .FacetBox .stbib-facet-tile:has(> .FacetHeader:not(.arrow_down)) .FacetsList {
+  max-height: 18rem !important;
+}
+
+@media (max-width: 1200px) {
+  #leftMenuContainer .FacetBox .stbib-facet-tile:has(> .FacetHeader:not(.arrow_down)) {
+    grid-column: span 2 !important;
+  }
+}
+
 .stbib-facet-tile {
   display: flex !important;
   flex-direction: column !important;

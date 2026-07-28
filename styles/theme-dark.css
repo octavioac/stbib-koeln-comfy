@@ -367,3 +367,46 @@ html[data-stbib-theme="dark"] a.button_gray:visited {
   color: var(--stbib-text) !important;
   border-color: var(--stbib-border-strong) !important;
 }
+
+/* ------------------------------------ Ergänzungen der Erweiterung (features.css) */
+
+html[data-stbib-theme="dark"] {
+  --stbib-ok-bg: #14301f;
+  --stbib-ok-border: #3f8f5f;
+  --stbib-ok-text: #9fe0b6;
+  --stbib-warn-bg: #33230f;
+  --stbib-warn-border: #a3743c;
+  --stbib-warn-text: #f0c795;
+  --stbib-neutral-bg: #262b31;
+  --stbib-surface-sunken: #191d21;
+}
+
+html[data-stbib-theme="dark"] .stbib-holdings__toggle,
+html[data-stbib-theme="dark"] .stbib-toolbar__button,
+html[data-stbib-theme="dark"] .stbib-loadmore__button {
+  color: var(--stbib-text);
+  background: linear-gradient(180deg, #2c333c 0%, #232830 100%);
+  border-color: var(--stbib-border-strong);
+}
+
+html[data-stbib-theme="dark"] .stbib-holdings__toggle:hover:not(:disabled),
+html[data-stbib-theme="dark"] .stbib-toolbar__button:hover:not(:disabled),
+html[data-stbib-theme="dark"] .stbib-loadmore__button:hover:not(:disabled) {
+  background: linear-gradient(180deg, #343c47 0%, #282e37 100%);
+  border-color: var(--stbib-link);
+}
+
+html[data-stbib-theme="dark"] .stbib-facet-filter {
+  background: var(--stbib-bg-card);
+}
+
+html[data-stbib-theme="dark"] .stbib-facet-filter__input {
+  color: var(--stbib-text) !important;
+  background-color: #14181c !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
+html[data-stbib-theme="dark"] .stbib-isbn-hint > td {
+  background: #17222d;
+  border-color: #35516b;
+}

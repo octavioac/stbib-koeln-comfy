@@ -1,5 +1,13 @@
 'use strict';
 
+/**
+ * Bootstrap der Erweiterung: Styles einhängen, Theme setzen, Feature-Module
+ * anwenden und den DOM beobachten.
+ *
+ * Die Feature-Module liegen in `src/` und werden über das Manifest vor dieser
+ * Datei geladen (gemeinsamer Namensraum `globalThis.stbib`).
+ */
+
 /** Pfade relativ zur Erweiterungs-Root (web_accessible_resources). */
 const STYLESHEETS = [
   'styles/tokens.css',
@@ -7,14 +15,30 @@ const STYLESHEETS = [
   'styles/layout.css',
   'styles/components.css',
   'styles/results.css',
+  'styles/features.css',
   'styles/print.css',
   'styles/theme-dark.css',
 ];
 
 const LINK_ATTR = 'data-stbib-katalog-modern';
 
-const STORAGE_MODERN = 'stbibModernEnabled';
-const STORAGE_DARK = 'stbibDarkMode';
+const STORAGE_DEFAULTS = {
+  stbibModernEnabled: true,
+  stbibDarkMode: false,
+  stbibHoldings: true,
+  stbibHoldingsAuto: false,
+  stbibLoadMore: true,
+  stbibSmartQuery: true,
+};
+
+/** Reihenfolge = Anwendungsreihenfolge; Facetten zuerst, damit Tiles stehen. */
+const MODULES = [stbib.facets, stbib.holdings, stbib.loadmore, stbib.query];
+
+/** Verzögerung für den DOM-Beobachter (ms). */
+const OBSERVE_DEBOUNCE = 200;
+
+let observer = null;
+let currentSettings = { ...STORAGE_DEFAULTS };
 
 function removeInjected(doc) {
   doc.querySelectorAll(`link[rel="stylesheet"][${LINK_ATTR}]`).forEach((el) => {
@@ -47,100 +71,115 @@ function applyTheme(doc, modernEnabled, dark) {
   root.setAttribute('data-stbib-theme', dark ? 'dark' : 'light');
 }
 
-/**
- * Portal liefert pro Facette .FacetHeader + .FacetsList als Geschwister in einem .FacetBox.
- * Wir wrappen jedes Paar in .stbib-facet-tile, damit CSS-Grid mehrere Akkordeons pro Zeile legen kann.
- * @param {Document} doc
- */
-function wrapFacetTiles(doc) {
-  doc.querySelectorAll('#leftMenuContainer .FacetBox').forEach((box) => {
-    if (box.dataset.stbibFacetWrapped === '1') {
-      return;
-    }
-    const headers = box.querySelectorAll(':scope > .FacetHeader');
-    headers.forEach((header) => {
-      const list = header.nextElementSibling;
-      if (!list || !list.classList.contains('FacetsList')) {
-        return;
+function moduleEnabled(module, settings) {
+  return module.storageKey ? settings[module.storageKey] !== false : true;
+}
+
+function applyModules(settings) {
+  for (const module of MODULES) {
+    try {
+      if (moduleEnabled(module, settings)) {
+        module.mount(settings);
+      } else {
+        module.unmount();
       }
-      const tile = doc.createElement('div');
-      tile.className = 'stbib-facet-tile';
-      box.insertBefore(tile, header);
-      tile.appendChild(header);
-      tile.appendChild(list);
-    });
-    box.dataset.stbibFacetWrapped = '1';
+    } catch (error) {
+      console.warn(`[stbib] Modul "${module.name}" fehlgeschlagen:`, error);
+    }
+  }
+}
+
+function unmountModules() {
+  for (const module of MODULES) {
+    try {
+      module.unmount();
+    } catch (error) {
+      console.warn(`[stbib] Modul "${module.name}" konnte nicht entfernt werden:`, error);
+    }
+  }
+}
+
+/**
+ * Prüft, ob eine Mutation nur von der Erweiterung selbst stammt. Ohne diesen
+ * Filter würde jede eigene Einfügung einen weiteren Durchlauf auslösen.
+ */
+function isOwnMutation(record) {
+  const nodes = [...record.addedNodes, ...record.removedNodes];
+  if (!nodes.length) {
+    return true;
+  }
+  return nodes.every((node) => {
+    if (node.nodeType !== 1) {
+      return true;
+    }
+    return (
+      node.hasAttribute(stbib.util.OWN_NODE_ATTR) ||
+      node.closest(`[${stbib.util.OWN_NODE_ATTR}]`) !== null
+    );
   });
 }
 
 /**
- * @param {Document} doc
+ * Teile der Seite kommen erst nach `document_idle`: Facetten-Listen werden von
+ * jQuery umsortiert, Dialoge werden nachgeladen, und „Mehr laden" hängt neue
+ * Trefferzeilen an. Der Beobachter hält die Features darauf synchron.
  */
-function unwrapFacetTiles(doc) {
-  doc.querySelectorAll('#leftMenuContainer .FacetBox').forEach((box) => {
-    if (box.dataset.stbibFacetWrapped !== '1') {
+function startObserver() {
+  if (observer || !document.body) {
+    return;
+  }
+
+  const rerun = stbib.util.debounce(() => {
+    applyModules(currentSettings);
+  }, OBSERVE_DEBOUNCE);
+
+  observer = new MutationObserver((records) => {
+    if (records.every(isOwnMutation)) {
       return;
     }
-    box.querySelectorAll(':scope > .stbib-facet-tile').forEach((tile) => {
-      const parent = tile.parentNode;
-      if (!parent) {
-        return;
-      }
-      const frag = doc.createDocumentFragment();
-      while (tile.firstChild) {
-        frag.appendChild(tile.firstChild);
-      }
-      parent.insertBefore(frag, tile);
-      tile.remove();
-    });
-    delete box.dataset.stbibFacetWrapped;
+    rerun();
   });
+
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
-function modernEnabledFromStored(stored) {
-  return stored[STORAGE_MODERN] !== false;
-}
-
-function darkEnabledFromStored(stored) {
-  return stored[STORAGE_DARK] === true;
+function stopObserver() {
+  if (observer) {
+    observer.disconnect();
+    observer = null;
+  }
 }
 
 function syncPage(stored) {
-  const enabled = modernEnabledFromStored(stored);
-  const dark = darkEnabledFromStored(stored);
+  currentSettings = { ...STORAGE_DEFAULTS, ...stored };
+  const enabled = currentSettings.stbibModernEnabled !== false;
 
   if (!enabled) {
-    unwrapFacetTiles(document);
+    stopObserver();
+    unmountModules();
   }
 
   inject(document, enabled);
-  applyTheme(document, enabled, dark);
+  applyTheme(document, enabled, currentSettings.stbibDarkMode === true);
 
   if (enabled) {
-    requestAnimationFrame(() => {
-      wrapFacetTiles(document);
-    });
+    applyModules(currentSettings);
+    startObserver();
   }
 }
 
-chrome.storage.local.get(
-  { [STORAGE_MODERN]: true, [STORAGE_DARK]: false },
-  (stored) => {
-    syncPage(stored);
-  }
-);
+chrome.storage.local.get(STORAGE_DEFAULTS, (stored) => {
+  syncPage(stored);
+});
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') {
     return;
   }
-  if (changes[STORAGE_MODERN] === undefined && changes[STORAGE_DARK] === undefined) {
+  if (!Object.keys(STORAGE_DEFAULTS).some((key) => changes[key] !== undefined)) {
     return;
   }
-  chrome.storage.local.get(
-    { [STORAGE_MODERN]: true, [STORAGE_DARK]: false },
-    (stored) => {
-      syncPage(stored);
-    }
-  );
+  chrome.storage.local.get(STORAGE_DEFAULTS, (stored) => {
+    syncPage(stored);
+  });
 });

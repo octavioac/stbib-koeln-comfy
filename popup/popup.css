@@ -66,8 +66,41 @@ h1 {
   user-select: none;
 }
 
-.dark-mode-block {
+.dark-mode-block,
+.switch-block {
   margin-top: 10px;
+}
+
+.panel--features {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.section-title {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+/* Komfort-Design aus → Funktionsschalter sind wirkungslos */
+.popup--modern-off .panel--features {
+  opacity: 0.5;
+}
+
+.popup--modern-off .panel--features .switch-row {
+  cursor: default;
+}
+
+code {
+  padding: 1px 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  border-radius: 4px;
+  background: #eef1f5;
 }
 
 .switch-caption {
@@ -181,4 +214,17 @@ body.popup--dark kbd {
 
 body.popup--dark .switch input:checked + .slider {
   background: #a20d18;
+}
+
+body.popup--dark .panel--features {
+  border-top-color: #343a43;
+}
+
+body.popup--dark .section-title {
+  color: #94a3b8;
+}
+
+body.popup--dark code {
+  background: #252a31;
+  color: #e8eaed;
 }

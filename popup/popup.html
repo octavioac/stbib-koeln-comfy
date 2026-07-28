@@ -38,6 +38,60 @@
       </div>
     </section>
 
+    <section class="panel panel--features" aria-labelledby="section-features-label">
+      <h2 id="section-features-label" class="section-title">Komfort-Funktionen</h2>
+
+      <label class="switch-row" for="stbib-toggle-holdings">
+        <span class="switch-label">Bestand in der Trefferliste</span>
+        <span class="switch">
+          <input type="checkbox" id="stbib-toggle-holdings" checked />
+          <span class="slider" aria-hidden="true"></span>
+        </span>
+      </label>
+      <p class="switch-caption" role="note">
+        Zeigt pro Treffer, ob und in welcher Zweigstelle ein Titel ausleihbar ist &ndash;
+        ohne den Treffer einzeln zu öffnen.
+      </p>
+
+      <div class="switch-block">
+        <label class="switch-row" for="stbib-toggle-holdings-auto">
+          <span class="switch-label">Bestand automatisch laden</span>
+          <span class="switch">
+            <input type="checkbox" id="stbib-toggle-holdings-auto" />
+            <span class="slider" aria-hidden="true"></span>
+          </span>
+        </label>
+        <p class="switch-caption" role="note">
+          Lädt den Bestand aller Treffer sofort. Bequem, kostet aber pro Trefferseite
+          zusätzliche Daten &ndash; im Mobilfunknetz eher aus.
+        </p>
+      </div>
+
+      <div class="switch-block">
+        <label class="switch-row" for="stbib-toggle-loadmore">
+          <span class="switch-label">„Mehr laden“ statt Blättern</span>
+          <span class="switch">
+            <input type="checkbox" id="stbib-toggle-loadmore" checked />
+            <span class="slider" aria-hidden="true"></span>
+          </span>
+        </label>
+      </div>
+
+      <div class="switch-block">
+        <label class="switch-row" for="stbib-toggle-smartquery">
+          <span class="switch-label">ISBN-Suche erkennen</span>
+          <span class="switch">
+            <input type="checkbox" id="stbib-toggle-smartquery" checked />
+            <span class="slider" aria-hidden="true"></span>
+          </span>
+        </label>
+        <p class="switch-caption" role="note">
+          Eine eingegebene ISBN wird als <code>isbn=&hellip;</code> gesucht. Ohne diesen
+          Präfix findet der Katalog sie nicht.
+        </p>
+      </div>
+    </section>
+
     <p class="hint">
       Nach dem Umschalten ggf. die Katalog-Seite neu laden (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> /
       <kbd>Strg</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>).

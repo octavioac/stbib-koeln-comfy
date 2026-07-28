@@ -28,4 +28,14 @@
   /* Touch / interaction */
   --stbib-touch-min: 44px;
   --stbib-shadow-card: 0 2px 8px rgba(15, 23, 42, 0.08);
+
+  /* Statusfarben – Bestand (verfügbar / entliehen / neutral) */
+  --stbib-ok-bg: #e6f4ea;
+  --stbib-ok-border: #78bd8f;
+  --stbib-ok-text: #145c2e;
+  --stbib-warn-bg: #fdf0e3;
+  --stbib-warn-border: #e0b083;
+  --stbib-warn-text: #8a4a13;
+  --stbib-neutral-bg: #eef1f5;
+  --stbib-surface-sunken: #f7f9fb;
 }
