@@ -154,6 +154,21 @@ test.describe("Facetten", () => {
     // Kachel-Wrapping der Erweiterung
     await expect(page.locator(".stbib-facet-tile").first()).toBeVisible({ timeout: 20000 });
 
+    /*
+     * Das Auf-/Zuklappen der Facette ist kein Verhalten der Erweiterung,
+     * sondern von jQuery gebunden – innerhalb eines `$(document).ready(...)`,
+     * das erst nach vollständigem Parsen feuert. Die Erweiterung selbst
+     * mountet inzwischen (`document_start`, gegen FOUC) oft schon vorher, das
+     * Kachel-Wrapping kann also sichtbar sein, bevor der Klick überhaupt etwas
+     * bewirkt. `document.readyState` ist dafür kein verlässlicher Ersatz –
+     * jQuery 1.4.2 hat einen eigenen, teils asynchronen Ready-Mechanismus, der
+     * knapp nach dem reinen Statuswechsel feuern kann. Wir fragen daher
+     * jQuery selbst: Ein über `window.jQuery(fn)` registriertes Callback
+     * feuert garantiert erst NACH allen zuvor registrierten – darunter dem
+     * Portal-eigenen Klick-Handler.
+     */
+    await page.evaluate(() => new Promise((resolve) => (window as any).jQuery(resolve)));
+
     // „Autor“ liefert bis zu 50 Werte – hier lohnt der Filter.
     const authorTile = page
       .locator(".stbib-facet-tile")

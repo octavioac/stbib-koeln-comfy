@@ -120,12 +120,15 @@ function isOwnMutation(record) {
 }
 
 /**
- * Teile der Seite kommen erst nach `document_idle`: Facetten-Listen werden von
- * jQuery umsortiert, Dialoge werden nachgeladen, und „Mehr laden" hängt neue
- * Trefferzeilen an. Der Beobachter hält die Features darauf synchron.
+ * Teile der Seite entstehen erst nach dem Start: Bei `document_start` (nötig
+ * gegen FOUC) existiert `document.body` noch nicht, wenn der erste
+ * Storage-Callback zurückkommt – und auch danach kommen Facetten-Listen,
+ * jQuery-Umsortierungen, Dialoge und „Mehr laden“-Zeilen erst nach und nach.
+ * Der Beobachter hängt darum an `documentElement` (existiert bereits ab
+ * `document_start`), nicht an `body`.
  */
 function startObserver() {
-  if (observer || !document.body) {
+  if (observer || !document.documentElement) {
     return;
   }
 
@@ -140,7 +143,7 @@ function startObserver() {
     rerun();
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 }
 
 function stopObserver() {
