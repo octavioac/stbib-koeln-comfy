@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Stadtbibliothek Köln – Katalog komfortabler",
+  "name": "Stbib Köln Komfort-Ansicht (inoffiziell)",
   "version": "1.3.0",
-  "description": "Bestand direkt in der Trefferliste, ISBN-Suche, „Mehr laden“ statt Seitenblättern, größere Schrift und klareres Layout für den Online-Katalog der Stadtbibliothek Köln. Per Popup ein- und ausschaltbar.",
+  "description": "Macht den Online-Katalog der Stadtbibliothek Köln übersichtlicher: Bestand sichtbar, ISBN-Suche, mehr Treffer laden. Inoffiziell.",
   "browser_specific_settings": {
     "gecko": {
       "id": "stbib-katalog-modern@local.extension",
@@ -20,7 +20,7 @@
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Stadtbibliothek: Katalog-Ansicht",
+    "default_title": "Komfort-Ansicht (inoffiziell) für die Stbib Köln",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png"
