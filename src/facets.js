@@ -30,6 +30,7 @@ stbib.facets = (() => {
   const FILTERED_FLAG = 'stbibFacetFiltered';
   const ACTIVE_FILTER_CLASS = 'stbib-active-filter';
   const activeFilters = new Map();
+  const facetHeaderHandlers = new Map();
   /** Ab so vielen Einträgen lohnt ein Filterfeld. */
   const FILTER_THRESHOLD = 10;
 
@@ -202,13 +203,70 @@ stbib.facets = (() => {
     activeFilters.clear();
   }
 
+  function positionFacetPopover(header) {
+    const tile = header.closest(`.${TILE_CLASS}`);
+    const list = header.nextElementSibling;
+    const box = tile?.parentElement;
+    if (!tile || !list?.classList.contains('FacetsList') || !box) {
+      return;
+    }
+    if (header.classList.contains('arrow_down')) {
+      tile.style.removeProperty('--stbib-facet-popover-width');
+      tile.style.removeProperty('--stbib-facet-popover-offset');
+      return;
+    }
+
+    const boxRect = box.getBoundingClientRect();
+    const tileRect = tile.getBoundingClientRect();
+    const width = Math.min(512, boxRect.width, Math.max(0, window.innerWidth - 32));
+    const offset = Math.min(0, boxRect.right - tileRect.left - width);
+    tile.style.setProperty('--stbib-facet-popover-width', `${width}px`);
+    tile.style.setProperty('--stbib-facet-popover-offset', `${offset}px`);
+  }
+
+  function positionOpenFacets() {
+    facetHeaderHandlers.forEach((_, header) => positionFacetPopover(header));
+  }
+
+  function mountFacetPopovers() {
+    const bindResize = facetHeaderHandlers.size === 0;
+    for (const header of util.qsa(`.${TILE_CLASS} > .FacetHeader`)) {
+      if (facetHeaderHandlers.has(header)) {
+        positionFacetPopover(header);
+        continue;
+      }
+      const onClick = () => {
+        window.setTimeout(() => positionFacetPopover(header), 0);
+      };
+      header.addEventListener('click', onClick);
+      facetHeaderHandlers.set(header, onClick);
+      positionFacetPopover(header);
+    }
+    if (bindResize && facetHeaderHandlers.size > 0) {
+      window.addEventListener('resize', positionOpenFacets);
+    }
+  }
+
+  function unmountFacetPopovers() {
+    window.removeEventListener('resize', positionOpenFacets);
+    facetHeaderHandlers.forEach((handler, header) => {
+      header.removeEventListener('click', handler);
+      const tile = header.closest(`.${TILE_CLASS}`);
+      tile?.style.removeProperty('--stbib-facet-popover-width');
+      tile?.style.removeProperty('--stbib-facet-popover-offset');
+    });
+    facetHeaderHandlers.clear();
+  }
+
   function mount() {
     wrapTiles();
     mountFilters();
     mountActiveFilters();
+    mountFacetPopovers();
   }
 
   function unmount() {
+    unmountFacetPopovers();
     unmountActiveFilters();
     unmountFilters();
     unwrapTiles();

@@ -16,6 +16,11 @@
   margin-inline: auto !important;
 }
 
+/* Trefferseiten behalten die kompakte Breite der vorherigen Darstellung. */
+html:has(#BrowseList) #Global {
+  max-width: 940px !important;
+}
+
 #Entete,
 #ZoneMenu,
 #Contenu,

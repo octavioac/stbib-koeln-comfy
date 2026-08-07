@@ -160,6 +160,9 @@ test.describe("Facetten", () => {
 
     // Kachel-Wrapping der Erweiterung
     await expect(page.locator(".stbib-facet-tile").first()).toBeVisible({ timeout: 20000 });
+    const resultsShell = await page.locator("#Global").boundingBox();
+    expect(resultsShell).not.toBeNull();
+    expect(resultsShell!.width).toBeLessThanOrEqual(940);
     const facetsBox = await page.locator(".FacetsContainer").boundingBox();
     const headingBox = await page.locator(".FacetBoxHeader").boundingBox();
     const firstTileBox = await page.locator(".stbib-facet-tile").first().boundingBox();
@@ -189,10 +192,18 @@ test.describe("Facetten", () => {
       .locator(".stbib-facet-tile")
       .filter({ has: page.locator(".FacetHeader", { hasText: "Autor" }) })
       .first();
+    const resultsY = (await page.locator("#BrowseList").boundingBox())!.y;
     await authorTile.locator(".FacetHeader").click();
 
     const filter = authorTile.locator(".stbib-facet-filter__input");
     await expect(filter).toBeVisible({ timeout: 20000 });
+    const listBox = await authorTile.locator(".FacetsList").boundingBox();
+    const facetBox = await page.locator(".FacetBox").boundingBox();
+    expect(listBox).not.toBeNull();
+    expect(facetBox).not.toBeNull();
+    expect(Math.abs((await page.locator("#BrowseList").boundingBox())!.y - resultsY)).toBeLessThan(2);
+    expect(listBox!.x).toBeGreaterThanOrEqual(facetBox!.x);
+    expect(listBox!.x + listBox!.width).toBeLessThanOrEqual(facetBox!.x + facetBox!.width + 1);
 
     const links = authorTile.locator(".FacetLinkA:visible");
     const before = await links.count();

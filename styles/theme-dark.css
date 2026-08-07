@@ -198,6 +198,16 @@ html[data-stbib-theme="dark"] .FacetHeader:hover {
   background: linear-gradient(180deg, #323945 0%, #2a3038 100%) !important;
 }
 
+html[data-stbib-theme="dark"]
+  #leftMenuContainer
+  .FacetBox
+  .stbib-facet-tile:has(> .FacetHeader:not(.arrow_down))
+  .FacetsList {
+  background: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55) !important;
+}
+
 html[data-stbib-theme="dark"] .FacetLinkA:hover {
   background: rgba(126, 180, 247, 0.12) !important;
 }
