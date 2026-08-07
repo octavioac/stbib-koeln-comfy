@@ -1,18 +1,22 @@
 # Stadtbibliothek Köln – Katalog komfortabler
 
-Ungepackte **Chrome-Erweiterung (Manifest V3)** für [https://katalog.stbib-koeln.de/](https://katalog.stbib-koeln.de/). Version **1.3.0** ergänzt den Katalog um echte Komfort-Funktionen – der Katalog selbst bleibt unverändert, alles läuft clientseitig im Browser.
+Ungepackte **Browser-Erweiterung (Manifest V3)** für den [Katalog der Stadtbibliothek Köln](https://katalog.stbib-koeln.de/). Sie verbessert ausschließlich die Darstellung und Interaktion im Browser. Der Katalog, das Benutzerkonto und die Daten der Bibliothek bleiben unverändert.
 
-**Kurzüberblick:**
+> Dieses private Projekt ist kein offizielles Angebot der Stadtbibliothek Köln.
 
-- **Verfügbarkeit direkt in der Trefferliste** – ohne jeden Titel einzeln zu öffnen: „1 von 3 verfügbar“, „Alle entliehen bis …“ oder „Kein Bestand“ als Badge in der Zeile
-- **ISBN-Suche** – ISBN mit oder ohne Bindestriche wird automatisch als `isbn=…` gesucht
-- **„Mehr laden“** – weitere Treffer anhängen statt dutzende Seiten zu blättern
-- **Facetten-Filter** – lange Autoren-/Verlagslisten durchsuchen, geöffnete Facette breiter
-- **Komfort-Design** – größere Schrift, mehr Abstand, klarere Trefferkarten, optional dunkles Farbschema (Beta)
+## Überblick
+
+- **Übersichtlich suchen:** kompakte Schnellsuche, größere Klickflächen und responsives Layout
+- **Besser filtern:** Facetten über den Treffern, Suchfeld für lange Listen, aktive Filter als entfernbare Chips
+- **Verfügbarkeit sehen:** Bestand direkt in der Trefferliste nachladen, ohne jeden Titel zu öffnen
+- **ISBN finden:** ISBN-10 und ISBN-13 automatisch als Katalogabfrage behandeln
+- **Weniger blättern:** weitere Treffer an die aktuelle Liste anhängen
+- **Konto und Vormerkung:** klarere, mobil nutzbare Formulare mit besserer Ausrichtung und Autofill-Unterstützung
+- **Optional dunkel:** dunkles Farbschema für die Komfort-Ansicht
 
 ## Warum dieses Projekt?
 
-Ich nutze die **Stadtbibliothek Köln** gern und leihe dort regelmäßig aus – Angebot und Service sind für mich überzeugend. Die **Weboberfläche der Suche** wirkt daneben aber ziemlich **veraltet**: kleine Klickflächen, unruhiges Layout, wenig Raum für klare Typografie. Statt das nur hinzunehmen, wollte ich die Nutzung **auf einfache Weise** modernisieren: rein **clientseitig** mit einer **Browser-Erweiterung**, ohne den Katalog der Bibliothek zu verändern. Dieses Plugin habe ich mir **selbst gebaut** und stelle den Code sowie die Erweiterung **allen zur Verfügung**, die die **Experience** beim Stöbern und Suchen etwas angenehmer haben möchten. Es handelt sich weiterhin um ein **privates Projekt**, **kein** offizielles Produkt der Stadtbibliothek.
+Die Oberfläche des Katalogs ist funktional, wirkt bei Suche, Filtern und Formularen aber unnötig technisch. Diese Erweiterung modernisiert genau diese Stellen clientseitig: ohne Zugang zu Bibliotheksdaten, ohne eigenen Server und ohne Änderung am Katalog selbst.
 
 ## Komfort-Funktionen
 
@@ -54,20 +58,23 @@ Unter der Trefferliste steht darum **„Weitere 10 Treffer laden“** samt Zähl
 
 ### Facetten
 
-Die Facetten („Einschränken der Suche“) liegen als Kacheln in einem Raster **über** der Trefferliste. Neu:
+Die Facetten („Einschränken der Suche“) liegen als Kacheln in einem Raster **über** der Trefferliste:
 
 - **Filterfeld** in jeder Facette mit mindestens 10 Werten – bei bis zu 50 Autoren oder Verlagen ist Tippen schneller als Scrollen.
-- Die **geöffnete** Facette belegt mehrere Rasterspalten, damit lange Werte („A. F. Steadman ; aus dem Englischen von …“) nicht in einer Fünftel-Spalte umbrechen.
+- Eine geöffnete Facette erscheint als ausreichend breites Panel über dem Inhalt. Die Trefferliste springt beim Öffnen und Schließen nicht.
+- Aktive Filter erscheinen neben der Suchanfrage als Chip mit einer klar beschrifteten `×`-Schaltfläche zum Entfernen.
 
 ### Komfort-Design & Layout
 
-Unabhängig von den Funktionen oben modernisiert das Komfort-Design die Darstellung:
+Unabhängig von den Funktionen oben modernisiert die Komfort-Ansicht die Darstellung:
 
-- größere Schrift, mehr Abstand, klarere Trefferkarten und bessere Klickflächen
-- Facetten **über** der Trefferliste in **voller Breite**, einzelne Facetten als **Kacheln** in einem Raster (ca. 5 Spalten auf großen Screens, weniger auf schmalen Viewports); technisch wrappt `src/facets.js` jedes Akkordeon (`.FacetHeader` + `.FacetsList`) in `.stbib-facet-tile`
-- optional **dunkles Farbschema** (Beta) – greift nur bei aktivem Komfort-Design
+- größere Schrift, klarere Trefferkarten und besser erreichbare Klickflächen
+- kompakte Trefferbreite: Medienbild, Titel und Aktionen bleiben auch auf großen Bildschirmen gut zusammen lesbar
+- responsive Schnellsuche mit sichtbarem Label und eindeutiger Primäraktion
+- überarbeitete Seiten für **Mein Konto** und **Vormerken**: klare Eingabefelder, verständliche Hinweise und mobil nutzbare Aktionen
+- optionales dunkles Farbschema – greift nur bei aktivierter Komfort-Ansicht
 
-Bei **ausgeschaltetem** Komfort-Design werden alle injizierten Styles und Funktionen entfernt; der Katalog steht wieder im Original da.
+Bei ausgeschalteter Komfort-Ansicht werden alle injizierten Styles und Ergänzungen entfernt. Der Katalog steht wieder im Original da.
 
 ## Ein- und Ausschalten
 
@@ -86,16 +93,20 @@ Die Einstellungen liegen in `chrome.storage.local`. Änderungen greifen sofort a
 
 **Typografie und Farben** weiterhin zentral in `styles/tokens.css` anpassbar.
 
-## Installation in Google Chrome
+## Installation
 
-1. Adresse `chrome://extensions` öffnen.
+### Chrome, Chromium, Edge und Brave
+
+1. Die Erweiterungsseite öffnen, etwa `chrome://extensions`.
 2. **Entwicklermodus** aktivieren.
 3. **Entpackte Erweiterung laden** wählen.
-4. Den geklonten Projektordner auswählen (Root mit `manifest.json`).
+4. Den Projektordner mit `manifest.json` auswählen.
 
 Optional: Release-ZIP entpacken und denselben Ordner wählen.
 
-Firefox ab **121** (`browser_specific_settings.gecko`): Das Facetten-Layout nutzt den CSS-Selektor `:has()`, der erst dort verfügbar ist.
+### Firefox
+
+Firefox ab **121** unterstützt die verwendeten Selektoren. Die Erweiterung lässt sich für lokale Tests temporär über `about:debugging` laden. Für eine dauerhafte Installation benötigt Firefox eine signierte Erweiterung.
 
 ## ZIP für die Weitergabe
 
@@ -107,19 +118,27 @@ Erzeugt eine ZIP-Datei mit `manifest.json`, `content.js`, `src/`, `popup/`, `sty
 
 ## Automatisierte Tests
 
-Voraussetzungen: `npm install`, `npx playwright install chromium`.
+Voraussetzungen: Node.js, npm und Playwright Chromium.
 
 ```bash
+npm install
+npx playwright install chromium
 npm test
 ```
 
-Drei Ebenen:
+Zusätzlich prüft der folgende Befehl das Manifest und die Erweiterungsdateien:
 
-- **`tests/selectors.spec.ts`** – Selektor-Gesundheitscheck ohne Browser (reine HTTP-Abfragen, wenige Sekunden). Prüft, dass die Klassen, IDs und URL-Parameter noch existieren, auf denen die Erweiterung aufbaut, und dass die blanke ISBN-Suche tatsächlich noch ins Leere läuft. Ändert die Stadtbibliothek ihre Templates, scheitern diese Tests laut – statt dass Nutzern still eine Funktion fehlt.
-- **`tests/features.spec.ts`** – Bestand, „Mehr laden“, ISBN-Erkennung und Facettenfilter im echten Browser mit geladener Erweiterung.
-- **`tests/smoke.spec.ts`** – Schnellsuche, Suchergebnisseite und Einstieg unter `/Zones2/`.
+```bash
+npm run lint:webext
+```
 
-Die Tests starten **Chromium mit sichtbarem Fenster** (Headless unterstützt Erweiterungen nicht zuverlässig) und laufen gegen den **echten Katalog**. Bei vielen Aufrufen kurz hintereinander antwortet das Portal gelegentlich mit `503`; darum ist ein Wiederholungsversuch konfiguriert und zwischen den Feature-Tests liegt eine kurze Pause.
+Die Tests laufen gegen den echten Katalog:
+
+- **`tests/selectors.spec.ts`** prüft den Serververtrag ohne Browser: Selektoren, Parameter und HTML-Strukturen, von denen die Erweiterung abhängt.
+- **`tests/features.spec.ts`** prüft Bestand, Nachladen, ISBN, Facetten, Konto, Schnellsuche und Vormerkung mit geladener Erweiterung.
+- **`tests/smoke.spec.ts`** deckt Schnellsuche, Trefferliste und den Einstieg unter `/Zones2/` ab.
+
+Die Tests starten Chromium mit sichtbarem Fenster, weil Erweiterungen im Headless-Modus nicht zuverlässig unterstützt werden. Der externe Katalog antwortet bei vielen schnellen Aufrufen gelegentlich mit `503`; deshalb ist ein Wiederholungsversuch konfiguriert und zwischen Feature-Tests liegt eine kurze Pause.
 
 ## Manuelle Testmatrix (Release-Check)
 
@@ -129,22 +148,27 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 |---|----------|
 | 1 | **Zones2** (`/Zones2/`): Katalog im iframe, Navigation, Schnellsuche sichtbar |
 | 2 | **Direkt** `…/alswww2.dll/APS_ZONES?fn=QuickSearch&Style=Portal3` |
-| 3 | **Suchergebnisseite**: Suchbegriff mit vielen Treffern; Zeile „Ergebnisse (n)“; **Sortierung** ändern; **Pagination** (nächste Seite); mindestens ein **Facetten-Link**; **Details/Bestand** öffnen |
+| 3 | **Suchergebnisseite**: Suchbegriff mit vielen Treffern; Zeile „Ergebnisse (n)“; **Sortierung** ändern; **Pagination** (nächste Seite); mindestens eine Facette öffnen und schließen, ohne dass die Trefferliste springt |
 | 4 | **Bestand**: einzelne Zeile aufklappen; **„Bestand für alle Treffer laden“**; ein Titel ohne physischen Bestand (E-Medium) zeigt „Kein Bestand“ |
 | 5 | **Mehr laden**: zweimal nachladen, Zähler stimmt, Blätter-Links des Portals funktionieren weiterhin |
 | 6 | **ISBN**: ISBN mit und ohne Bindestriche im Suchfeld; Nulltrefferseite direkt aufrufen → Hinweis erscheint |
-| 7 | **Facetten**: „Autor“ öffnen, filtern, leeren |
+| 7 | **Facetten**: „Autor“ öffnen, filtern, leeren; einen Filter setzen und über das `×` wieder entfernen |
 | 8 | **Popup**: Design aus, Seite neu laden → Originaldarstellung; wieder an → modernisiert; Funktionsschalter einzeln prüfen |
-| 9 | **Desktop** ca. 1280px und **schmal** ca. 390px (Device-Toolbar) |
-| 10 | **Mobile vs. klassisch**: Footer-Link zur mobilen Ansicht bzw. zurück – Layout brauchbar |
-| 11 | Optional: **Drucken der Liste** – Inhalt sichtbar, geladener Bestand wird mitgedruckt |
+| 9 | **Desktop** ca. 1280px und **schmal** ca. 390px: keine horizontale Scrollleiste, bedienbare Aktionen |
+| 10 | **Mein Konto**: Felder, PIN-Hinweise, „Geheimnummer vergessen?“ und beide Aktionen prüfen |
+| 11 | **Vormerken**: Medienangaben, Abholbibliothek, Hinweis zum Entgelt und Bestätigen/Abbrechen prüfen |
+| 12 | **Mobile vs. klassisch**: Footer-Link zur mobilen Ansicht bzw. zurück – Layout brauchbar |
+| 13 | Optional: **Drucken der Liste** – Inhalt sichtbar, geladener Bestand wird mitgedruckt |
 
 ## Projektstruktur
 
 - `manifest.json` – MV3, Content-Scripts mit `all_frames: true`; Styles per `web_accessible_resources` nur bei „an“
 - `content.js` – Bootstrap: Styles einhängen, Theme setzen, Module anwenden, DOM beobachten
-- `src/util.js` – gemeinsame Helfer (Namensraum `globalThis.stbib`, `fetch` + `DOMParser`, Parallelitätsbegrenzung)
-- `src/facets.js`, `src/holdings.js`, `src/loadmore.js`, `src/query.js` – die vier Funktionsmodule, jedes mit `mount()` / `unmount()`
+- `src/util.js` – gemeinsame Helfer: DOM-Knoten, Viewport, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
+- `src/facets.js` – Kachel- und Panel-Layout für Facetten, Suchfelder und entfernbare Filter-Chips
+- `src/holdings.js`, `src/loadmore.js`, `src/query.js` – Bestand, weitere Treffer und ISBN-Erkennung
+- `src/account.js` – Konto-Login mit reversiblen semantischen Ergänzungen
+- `src/pages.js` – Schnellsuche und Vormerkung mit reversiblen Seitenmarkern
 - `popup/` – Schalter im Toolbar-Popup
 - `styles/tokens.css` … `print.css` – aufeinander aufbauende Overrides; `styles/features.css` für die ergänzten Bausteine; `styles/theme-dark.css` für `data-stbib-theme="dark"` (wird zuletzt geladen)
 - `icons/` – Platzhalter-Icons (optional austauschen)
@@ -152,7 +176,7 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 
 ### Wie die Module zusammenspielen
 
-`content.js` liest die Einstellungen und ruft je Modul `mount(settings)` oder `unmount()` auf. Beide sind **idempotent**: Ein zweiter `mount()`-Aufruf fügt nichts doppelt ein, `unmount()` stellt den ursprünglichen DOM wieder her (Facetten werden ausgepackt, eingefügte Knoten sind über `data-stbib-own` markiert und werden entfernt).
+`content.js` liest die Einstellungen und ruft je Modul `mount(settings)` oder `unmount()` auf. Die Module sind idempotent: Ein zweiter `mount()` fügt nichts doppelt ein. `unmount()` stellt den ursprünglichen DOM wieder her; eigene Knoten tragen `data-stbib-own`.
 
 Ein **MutationObserver** hält das synchron, denn Teile der Seite kommen erst nach `document_idle`: jQuery sortiert Facettenlisten um, Dialoge werden nachgeladen, und „Mehr laden“ hängt neue Trefferzeilen an, die ebenfalls Bestands-Schaltflächen brauchen. Eigene Einfügungen erkennt der Observer an `data-stbib-own` und ignoriert sie, damit er sich nicht selbst triggert.
 
