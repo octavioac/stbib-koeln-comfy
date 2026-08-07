@@ -9,6 +9,22 @@
   box-sizing: border-box !important;
 }
 
+/* Direkte Portal3-Seiten verwenden #Global statt #contentContainer. */
+#Global {
+  width: 100% !important;
+  max-width: 1280px !important;
+  margin-inline: auto !important;
+}
+
+#Entete,
+#ZoneMenu,
+#Contenu,
+#PdP {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
 #Contenu,
 #Principal,
 div#Principal {
@@ -329,11 +345,33 @@ li.hi .leftNavButton,
   padding: 0.25rem 0.5rem !important;
 }
 
+html.stbib-form-document #Contenu > table > tbody > tr > td:has(> #leftMenuContainer) {
+  display: none !important;
+}
+
+html.stbib-form-document #ColCentre {
+  width: min(100%, 68rem) !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(0.75rem, 2vw, 1.25rem) !important;
+}
+
+html.stbib-form-document #titleContainer2 {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
 /* Tabellen-Rahmen: zweizeilig = Filterzeile + Inhalt */
 #Contenu > table {
+  display: block !important;
   width: 100% !important;
+  table-layout: fixed !important;
   border-collapse: separate !important;
   border-spacing: 0 0.85rem !important;
+}
+
+#Contenu > table > tbody {
+  display: block !important;
+  width: 100% !important;
 }
 
 /* Hauptbereich: Filter oben volle Breite, Trefferliste darunter */

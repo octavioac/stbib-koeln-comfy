@@ -36,6 +36,18 @@ stbib.util = (() => {
     return node;
   }
 
+  /** Ergänzt bei alten Portal-Seiten einen mobilen Viewport und gibt nur den eigenen Knoten zurück. */
+  function ensureViewport() {
+    if (document.querySelector('meta[name="viewport"]') || !document.head) {
+      return null;
+    }
+    const viewport = el('meta', {
+      attrs: { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    });
+    document.head.appendChild(viewport);
+    return viewport;
+  }
+
   /**
    * Entfernt alle Knoten unterhalb von `root`, die auf `selector` passen.
    * Gedacht für die eigenen Bausteine der Erweiterung beim `unmount()`.
@@ -167,6 +179,7 @@ stbib.util = (() => {
     currentStyle,
     debounce,
     el,
+    ensureViewport,
     fetchDocument,
     mapLimit,
     nodesToText,

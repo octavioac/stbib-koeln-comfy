@@ -27,7 +27,8 @@ html[data-stbib-theme="dark"] body {
  */
 html[data-stbib-theme="dark"] #contentContainer,
 html[data-stbib-theme="dark"] #Principal,
-html[data-stbib-theme="dark"] div#Principal {
+html[data-stbib-theme="dark"] div#Principal,
+html[data-stbib-theme="dark"] #Global {
   background-color: var(--stbib-bg-page) !important;
   background-image: none !important;
 }
@@ -159,6 +160,7 @@ html[data-stbib-theme="dark"] .FacetBoxHeader {
 html[data-stbib-theme="dark"] input[type="text"],
 html[data-stbib-theme="dark"] input[type="search"],
 html[data-stbib-theme="dark"] input[type="number"],
+html[data-stbib-theme="dark"] input[type="password"],
 html[data-stbib-theme="dark"] input.RechTxt,
 html[data-stbib-theme="dark"] .SearchResultsPageField,
 html[data-stbib-theme="dark"] textarea,
@@ -409,4 +411,26 @@ html[data-stbib-theme="dark"] .stbib-facet-filter__input {
 html[data-stbib-theme="dark"] .stbib-isbn-hint > td {
   background: #17222d;
   border-color: #35516b;
+}
+
+html[data-stbib-theme="dark"] .stbib-active-filter {
+  background: var(--stbib-bg-card) !important;
+  border-color: #35516b !important;
+}
+
+html[data-stbib-theme="dark"] .stbib-active-filter__remove:link,
+html[data-stbib-theme="dark"] .stbib-active-filter__remove:visited {
+  background: #24384b !important;
+}
+
+html[data-stbib-theme="dark"] .stbib-active-filter__remove:hover {
+  color: #fff !important;
+  background: var(--stbib-bg-header-bar) !important;
+}
+
+html[data-stbib-theme="dark"] .searchStatementModifyCell #buttonNewSearch.button,
+html[data-stbib-theme="dark"] a.button.stbib-reservation-cancel {
+  color: var(--stbib-text) !important;
+  background: #2c3440 !important;
+  border-color: var(--stbib-border-strong) !important;
 }

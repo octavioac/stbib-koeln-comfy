@@ -28,6 +28,8 @@ stbib.facets = (() => {
   const HIDDEN_CLASS = 'stbib-facet-hidden';
   const WRAPPED_FLAG = 'stbibFacetWrapped';
   const FILTERED_FLAG = 'stbibFacetFiltered';
+  const ACTIVE_FILTER_CLASS = 'stbib-active-filter';
+  const activeFilters = new Map();
   /** Ab so vielen Einträgen lohnt ein Filterfeld. */
   const FILTER_THRESHOLD = 10;
 
@@ -144,12 +146,70 @@ stbib.facets = (() => {
     util.removeOwnNodes(document, `.${FILTER_CLASS}`);
   }
 
+  function mountActiveFilters() {
+    const links = util.qsa(
+      '.searchStatementCell a[href*="RemoveClause"], .SearchStatementBox a[href*="RemoveClause"]'
+    );
+    for (const link of links) {
+      const filter = link.closest('b');
+      if (!filter || activeFilters.has(filter)) {
+        continue;
+      }
+
+      const label = util
+        .normalizeSpace(filter.textContent)
+        .replace(/^(?:and|und)\s*\(\s*/i, '')
+        .replace(/\s*\)$/, '');
+      if (!label) {
+        continue;
+      }
+
+      activeFilters.set(filter, {
+        nodes: Array.from(filter.childNodes),
+        link,
+        ariaLabel: link.getAttribute('aria-label'),
+        title: link.getAttribute('title'),
+      });
+
+      const text = util.el('span', {
+        className: `${ACTIVE_FILTER_CLASS}__label`,
+        text: label,
+      });
+      filter.replaceChildren(text, link);
+      filter.classList.add(ACTIVE_FILTER_CLASS);
+      link.classList.add(`${ACTIVE_FILTER_CLASS}__remove`);
+      link.setAttribute('aria-label', `Filter ${label} entfernen`);
+      link.setAttribute('title', `Filter ${label} entfernen`);
+    }
+  }
+
+  function unmountActiveFilters() {
+    activeFilters.forEach(({ nodes, link, ariaLabel, title }, filter) => {
+      filter.replaceChildren(...nodes);
+      filter.classList.remove(ACTIVE_FILTER_CLASS);
+      link.classList.remove(`${ACTIVE_FILTER_CLASS}__remove`);
+      if (ariaLabel == null) {
+        link.removeAttribute('aria-label');
+      } else {
+        link.setAttribute('aria-label', ariaLabel);
+      }
+      if (title == null) {
+        link.removeAttribute('title');
+      } else {
+        link.setAttribute('title', title);
+      }
+    });
+    activeFilters.clear();
+  }
+
   function mount() {
     wrapTiles();
     mountFilters();
+    mountActiveFilters();
   }
 
   function unmount() {
+    unmountActiveFilters();
     unmountFilters();
     unwrapTiles();
   }

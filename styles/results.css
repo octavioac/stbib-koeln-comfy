@@ -71,11 +71,64 @@
 
 .searchStatementBox .searchStatementCell,
 .SearchStatementBox .searchStatementCell {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
   font-size: var(--stbib-fs-body) !important;
   font-weight: 700 !important;
   color: var(--stbib-text) !important;
   flex: 1 1 12rem !important;
   min-width: 0 !important;
+}
+
+.stbib-active-filter {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  max-width: 100% !important;
+  padding: 0.25rem 0.3rem 0.25rem 0.65rem !important;
+  font-size: var(--stbib-fs-small) !important;
+  line-height: 1.35 !important;
+  color: var(--stbib-text) !important;
+  background: var(--stbib-bg-card) !important;
+  border: 1px solid #8fb4d9 !important;
+  border-radius: 999px !important;
+  box-sizing: border-box !important;
+}
+
+.stbib-active-filter__label {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.stbib-active-filter__remove:link,
+.stbib-active-filter__remove:visited {
+  display: inline-grid !important;
+  place-items: center !important;
+  flex: 0 0 1.75rem !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+  color: var(--stbib-link) !important;
+  text-decoration: none !important;
+  background: #e8f2fc !important;
+  border-radius: 50% !important;
+}
+
+.stbib-active-filter__remove:hover {
+  color: #fff !important;
+  background: var(--stbib-bg-header-bar) !important;
+}
+
+.stbib-active-filter__remove::before {
+  content: "×" !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+.stbib-active-filter__remove img {
+  display: none !important;
 }
 
 .searchStatementBox .searchStatementModifyCell,
@@ -101,7 +154,25 @@
   box-sizing: border-box !important;
 }
 
+.searchStatementModifyCell #buttonModifySearch.button {
+  background: var(--stbib-bg-header-bar) !important;
+}
+
+.searchStatementModifyCell #buttonNewSearch.button {
+  color: var(--stbib-text) !important;
+  background: #e8eef5 !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
 @media (max-width: 720px) {
+  .searchStatementBox table,
+  .searchStatementBox tbody,
+  .SearchStatementBox table,
+  .SearchStatementBox tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
   .searchStatementBox table tr,
   .SearchStatementBox table tr {
     display: flex !important;
@@ -110,9 +181,19 @@
     gap: 0.75rem !important;
   }
 
+  .searchStatementBox .searchStatementLabel,
+  .searchStatementBox .searchStatementCell,
+  .SearchStatementBox .searchStatementLabel,
+  .SearchStatementBox .searchStatementCell {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+  }
+
   .searchStatementBox .searchStatementModifyCell,
   .SearchStatementBox .searchStatementModifyCell {
     margin-left: 0 !important;
+    flex: 0 1 auto !important;
+    width: 100% !important;
     max-width: none !important;
     min-width: 0 !important;
   }
@@ -446,9 +527,41 @@ table.browseList td table {
 }
 
 @media (max-width: 700px) {
+  .SearchResultsHeader table,
+  .SearchResultsHeader tbody,
+  .SearchResultsHeader tr,
+  .SearchResultsTrailer table,
+  .SearchResultsTrailer tbody,
+  .SearchResultsTrailer tr {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .SearchResultsHeader td,
+  .SearchResultsTrailer td {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.35rem !important;
+    width: 100% !important;
+    padding: 0.2rem 0 !important;
+    box-sizing: border-box !important;
+    text-align: start !important;
+  }
+
+  table.browseList,
+  table.browseList > tbody,
+  table.browseList > tbody > tr {
+    display: block !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
   table.browseList > tbody > tr > td {
     display: block !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .SummaryPosInSetCell,

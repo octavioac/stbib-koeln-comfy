@@ -8,6 +8,8 @@ import { launch_with_extension } from "./extension-fixture";
 
 const CATALOG_ORIGIN = "https://katalog.stbib-koeln.de";
 const QUICKSEARCH_PATH = "/alswww2.dll/APS_ZONES?fn=QuickSearch&Style=Portal3";
+const ACCOUNT_PATH =
+  "/alswww2.dll/APS_ZONES?fn=MyZone&Style=Portal3&Lang=GER&ResponseEncoding=utf-8";
 
 /**
  * Jeder Test startet ein eigenes Browserprofil ohne Cache und lädt damit die
@@ -56,7 +58,12 @@ test.describe("Bestand in der Trefferliste", () => {
 
     const toggles = page.locator(".stbib-holdings__toggle");
     await expect(toggles.first()).toBeVisible({ timeout: 20000 });
-    expect(await toggles.count(), "eine Schaltfläche pro Trefferzeile").toBeGreaterThan(1);
+    await expect
+      .poll(async () => toggles.count(), {
+        message: "eine Schaltfläche pro Trefferzeile",
+        timeout: 20000,
+      })
+      .toBeGreaterThan(1);
 
     await expect(page.locator(".stbib-toolbar__button")).toBeVisible();
 
@@ -144,7 +151,7 @@ test.describe("ISBN-Erkennung", () => {
 });
 
 test.describe("Facetten", () => {
-  test("lange Facette bekommt ein Filterfeld", async () => {
+  test("filtert lange Facetten und stellt aktive Filter entfernbar dar", async () => {
     const context = await launch_with_extension();
     const page = await context.newPage();
 
@@ -153,6 +160,14 @@ test.describe("Facetten", () => {
 
     // Kachel-Wrapping der Erweiterung
     await expect(page.locator(".stbib-facet-tile").first()).toBeVisible({ timeout: 20000 });
+    const facetsBox = await page.locator(".FacetsContainer").boundingBox();
+    const headingBox = await page.locator(".FacetBoxHeader").boundingBox();
+    const firstTileBox = await page.locator(".stbib-facet-tile").first().boundingBox();
+    expect(facetsBox).not.toBeNull();
+    expect(headingBox).not.toBeNull();
+    expect(firstTileBox).not.toBeNull();
+    expect(headingBox!.x).toBe(firstTileBox!.x);
+    expect(headingBox!.x).toBeGreaterThan(facetsBox!.x);
 
     /*
      * Das Auf-/Zuklappen der Facette ist kein Verhalten der Erweiterung,
@@ -191,6 +206,157 @@ test.describe("Facetten", () => {
     await expect
       .poll(async () => links.count(), { timeout: 10000 })
       .toBe(before);
+
+    await links.first().click();
+    const activeFilter = page.locator(".stbib-active-filter").first();
+    await expect(activeFilter).toBeVisible({ timeout: 45000 });
+    const removeFilter = activeFilter.locator(".stbib-active-filter__remove");
+    await expect(removeFilter).toHaveAttribute("aria-label", /Filter .+ entfernen/);
+    expect(
+      await removeFilter.evaluate((element) => getComputedStyle(element, "::before").content)
+    ).toContain("×");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect
+      .poll(async () => page.evaluate(() => document.documentElement.scrollWidth))
+      .toBeLessThanOrEqual(390);
+    await expect(activeFilter).toBeVisible();
+
+    await removeFilter.click();
+    await expect(page.locator(".stbib-active-filter")).toHaveCount(0, { timeout: 45000 });
+
+    await context.close();
+  });
+});
+
+test.describe("Mein Konto", () => {
+  test("stellt das Login-Formular responsiv und autofill-freundlich dar", async () => {
+    const context = await launch_with_extension();
+    const page = await context.newPage();
+
+    await page.goto(`${CATALOG_ORIGIN}${ACCOUNT_PATH}`, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+
+    const accountPage = page.locator("#pageContent.stbib-account-page");
+    await expect(accountPage).toBeVisible({ timeout: 20000 });
+    await expect(page.locator("#BRWR")).toHaveAttribute("autocomplete", "username");
+    await expect(page.locator("#PIN")).toHaveAttribute("autocomplete", "current-password");
+    await expect(page.locator(".stbib-account-intro")).toBeVisible();
+    await expect(page.locator(".MyZonetitleText")).toHaveText(
+      "In Ihr Bibliothekskonto einloggen"
+    );
+    await expect(page.locator('label[for="PIN"]')).toHaveText(
+      "PIN oder vorläufiger Zugangscode"
+    );
+
+    const borrowerBox = await page.locator("#BRWR").boundingBox();
+    const pinBox = await page.locator("#PIN").boundingBox();
+    expect(borrowerBox).not.toBeNull();
+    expect(pinBox).not.toBeNull();
+    expect(borrowerBox!.height).toBe(pinBox!.height);
+    expect(
+      await page.locator("#LoginForm").evaluate((form) => {
+        const advice = document.querySelector(".loginAdvice");
+        const container = advice?.parentElement
+          ? Array.from(advice.parentElement.children).find((child) => child.contains(form))
+          : null;
+        return container?.nextElementSibling === advice;
+      })
+    ).toBe(true);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator("#buttonLoginSubmit")).toHaveCSS("width", /\d+px/);
+    const formBox = await page.locator("#LoginForm").boundingBox();
+    expect(formBox).not.toBeNull();
+    expect(formBox!.x).toBeGreaterThanOrEqual(0);
+    expect(formBox!.x + formBox!.width).toBeLessThanOrEqual(390);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+
+    await context.close();
+  });
+});
+
+test.describe("Formularseiten", () => {
+  test("stellt die Schnellsuche als kompakte responsive Karte dar", async () => {
+    const context = await launch_with_extension();
+    const page = await context.newPage();
+
+    await page.goto(`${CATALOG_ORIGIN}${QUICKSEARCH_PATH}`, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+
+    await expect(page.locator("#pageContent.stbib-quicksearch-page")).toBeVisible({
+      timeout: 20000,
+    });
+    await expect(page.locator('label[for="Query"]')).toHaveText("Suchbegriff");
+    await expect(page.locator(".stbib-quicksearch-intro")).toBeVisible();
+    const labelBox = await page.locator('label[for="Query"]').boundingBox();
+    const queryBox = await page.locator("#Query").boundingBox();
+    expect(labelBox).not.toBeNull();
+    expect(queryBox).not.toBeNull();
+    expect(queryBox!.x).toBe(labelBox!.x);
+    const pageBox = await page.locator("#pageContent.stbib-quicksearch-page").boundingBox();
+    const formBox = await page.locator("#ExpertSearch").boundingBox();
+    const eventsBox = await page.locator(".Exemple").boundingBox();
+    expect(pageBox).not.toBeNull();
+    expect(formBox).not.toBeNull();
+    expect(eventsBox).not.toBeNull();
+    expect(Math.abs((pageBox!.x + pageBox!.width / 2) - (formBox!.x + formBox!.width / 2))).toBeLessThan(1);
+    expect(eventsBox!.width).toBe(formBox!.width);
+    expect(eventsBox!.x).toBe(formBox!.x);
+
+    await page.evaluate(() => {
+      const form = document.querySelector("#ExpertSearch")!;
+      const replacement = form.cloneNode(true) as HTMLFormElement;
+      replacement.querySelector(".stbib-quicksearch-intro")?.remove();
+      replacement.querySelector('label[for="Query"]')!.textContent = "Mot recherché";
+      replacement.querySelector("#Query")!.removeAttribute("autocomplete");
+      form.replaceWith(replacement);
+    });
+    await expect(page.locator('label[for="Query"]')).toHaveText("Suchbegriff", {
+      timeout: 10000,
+    });
+    await expect(page.locator(".stbib-quicksearch-intro")).toBeVisible();
+    await expect(page.locator("#Query")).toHaveAttribute("autocomplete", "off");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect
+      .poll(async () => page.evaluate(() => document.documentElement.scrollWidth))
+      .toBeLessThanOrEqual(390);
+    const searchBox = await page.locator("#buttonQuickSearch").boundingBox();
+    const clearBox = await page.locator("#buttonQuickSearchClr").boundingBox();
+    expect(searchBox).not.toBeNull();
+    expect(clearBox).not.toBeNull();
+    expect(searchBox!.width).toBe(clearBox!.width);
+
+    await context.close();
+  });
+
+  test("gliedert die Vormerkseite und hält den Login mobil nutzbar", async () => {
+    const context = await launch_with_extension();
+    const page = await context.newPage();
+
+    await searchFor(page, "kirby");
+    await expect(page.locator("#BrowseList")).toBeVisible({ timeout: 45000 });
+    const reservationHref = await page.locator('a[href*="MakeReservation"]').first().getAttribute("href");
+    expect(reservationHref).toBeTruthy();
+    await page.goto(new URL(reservationHref!, page.url()).href, {
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+
+    await expect(page.locator("#pageContent.stbib-reservation-page")).toBeVisible({
+      timeout: 20000,
+    });
+    await expect(page.locator(".stbib-reservation-meta")).toBeVisible();
+    await expect(page.locator("#BRWR")).toHaveAttribute("autocomplete", "username");
+    await expect(page.locator("#PIN")).toHaveAttribute("autocomplete", "current-password");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 
     await context.close();
   });

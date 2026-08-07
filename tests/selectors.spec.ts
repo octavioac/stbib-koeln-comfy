@@ -13,6 +13,7 @@ import { test, expect, request as playwrightRequest } from "@playwright/test";
 const BASE = "https://katalog.stbib-koeln.de/alswww2.dll";
 const SEARCH_URL = `${BASE}/APS_ZONES?fn=Search&q=harry+potter&Style=Portal3&Lang=GER&ResponseEncoding=utf-8`;
 const QUICKSEARCH_URL = `${BASE}/APS_ZONES?fn=QuickSearch&Style=Portal3&Lang=GER&ResponseEncoding=utf-8`;
+const ACCOUNT_URL = `${BASE}/APS_ZONES?fn=MyZone&Style=Portal3&Lang=GER&ResponseEncoding=utf-8`;
 
 async function fetchText(url: string): Promise<string> {
   const context = await playwrightRequest.newContext();
@@ -112,5 +113,17 @@ test.describe("Portal-Vertrag: ISBN-Suche", () => {
 
     // Der Hinweiskasten hängt an dieser Tabelle.
     expect(bare, "#ErrorAdvice").toContain('id="ErrorAdvice"');
+  });
+});
+
+test.describe("Portal-Vertrag: Mein Konto", () => {
+  test("Login-Seite liefert die erwarteten Felder und Hilfebereiche", async () => {
+    const html = await fetchText(ACCOUNT_URL);
+
+    expect(html, "Login-Formular").toContain('id="LoginForm"');
+    expect(html, "Ausweisnummer").toContain('id="BRWR"');
+    expect(html, "PIN").toContain('id="PIN"');
+    expect(html, "PIN-Hinweise").toContain('class="loginAdvice"');
+    expect(html, "PIN vergessen").toContain('class="LoginForgotPinCell"');
   });
 });

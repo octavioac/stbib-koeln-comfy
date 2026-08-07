@@ -32,13 +32,35 @@ const STORAGE_DEFAULTS = {
 };
 
 /** Reihenfolge = Anwendungsreihenfolge; Facetten zuerst, damit Tiles stehen. */
-const MODULES = [stbib.facets, stbib.holdings, stbib.loadmore, stbib.query];
+const MODULES = [
+  stbib.facets,
+  stbib.holdings,
+  stbib.loadmore,
+  stbib.query,
+  stbib.account,
+  stbib.pages,
+];
 
 /** Verzögerung für den DOM-Beobachter (ms). */
 const OBSERVE_DEBOUNCE = 200;
 
 let observer = null;
+let viewportNode = null;
 let currentSettings = { ...STORAGE_DEFAULTS };
+
+function syncViewport() {
+  const nativeViewport = document.querySelector(
+    `meta[name="viewport"]:not([${stbib.util.OWN_NODE_ATTR}])`
+  );
+  if (nativeViewport) {
+    viewportNode?.remove();
+    viewportNode = null;
+    return;
+  }
+  if (!viewportNode?.isConnected) {
+    viewportNode = stbib.util.ensureViewport();
+  }
+}
 
 function removeInjected(doc) {
   doc.querySelectorAll(`link[rel="stylesheet"][${LINK_ATTR}]`).forEach((el) => {
@@ -76,6 +98,7 @@ function moduleEnabled(module, settings) {
 }
 
 function applyModules(settings) {
+  syncViewport();
   for (const module of MODULES) {
     try {
       if (moduleEnabled(module, settings)) {
@@ -160,6 +183,8 @@ function syncPage(stored) {
   if (!enabled) {
     stopObserver();
     unmountModules();
+    viewportNode?.remove();
+    viewportNode = null;
   }
 
   inject(document, enabled);
