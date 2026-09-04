@@ -21,6 +21,24 @@ stbib.holdings = (() => {
   const ROW_FLAG = 'stbibHoldings';
   const DATA_CELL_SELECTOR = '[class*="SummaryDataCell"]';
   const MAX_PARALLEL = 4;
+  /** Auto-Laden läuft gedrosselt: Das Portal antwortet auf Bursts mit 503. */
+  const AUTO_STAGGER_MS = 250;
+
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /** Auto-Laden: Starte je Zeile eine Abfrage, versetzt um AUTO_STAGGER_MS. */
+  function loadAllStaggered(roots) {
+    void (async () => {
+      for (const [index, root] of roots.entries()) {
+        if (index) {
+          await delay(AUTO_STAGGER_MS);
+        }
+        reveal(root, { expand: false });
+      }
+    })();
+  }
 
   const STATUS_AVAILABLE = /^verf(?:ü|ue)gbar/i;
   const STATUS_ON_LOAN = /^entliehen/i;
@@ -431,8 +449,9 @@ stbib.holdings = (() => {
   function mount(settings) {
     autoLoad = settings ? settings.stbibHoldingsAuto === true : autoLoad;
 
+    const rows = resultRows();
     const fresh = [];
-    for (const row of resultRows()) {
+    for (const row of rows) {
       if (row.dataset[ROW_FLAG] === '1') {
         continue;
       }
@@ -447,12 +466,12 @@ stbib.holdings = (() => {
       fresh.push(container);
     }
 
-    if (resultRows().length) {
+    if (rows.length) {
       mountToolbar();
     }
 
     if (autoLoad && fresh.length) {
-      util.mapLimit(fresh, MAX_PARALLEL, (root) => reveal(root, { expand: false }));
+      loadAllStaggered(fresh);
     }
   }
 

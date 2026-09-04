@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Stbib Köln Komfort-Ansicht (inoffiziell)",
   "version": "1.4.0",
+  "minimum_chrome_version": "105",
   "description": "Macht den Online-Katalog der Stadtbibliothek Köln übersichtlicher: Bestand sichtbar, ISBN-Suche, mehr Treffer laden. Inoffiziell.",
   "browser_specific_settings": {
     "gecko": {
@@ -23,7 +24,8 @@
     "default_title": "Komfort-Ansicht (inoffiziell) für die Stbib Köln",
     "default_icon": {
       "16": "icons/icon16.png",
-      "32": "icons/icon32.png"
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png"
     }
   },
   "permissions": ["storage"],

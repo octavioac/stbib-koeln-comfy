@@ -89,7 +89,10 @@ stbib.pages = (() => {
     );
     addClass(tableContaining(titleValue, 'Notation'), 'stbib-reservation-meta');
 
-    const pickup = page.querySelector('select');
+    // Select gezielt über den umgebenden Kontext finden: Das erste <select>
+    // der Seite muss nicht die Abholbibliothek sein.
+    const pickupHint = smallestTextContainer(page, 'Bitte wählen Sie die Bibliothek');
+    const pickup = pickupHint?.closest('table')?.querySelector('select') || null;
     if (pickup) {
       addClass(tableContaining(pickup, 'Bitte wählen Sie die Bibliothek'), 'stbib-reservation-pickup');
       setAttribute(pickup, 'aria-label', 'Abholbibliothek');

@@ -190,24 +190,26 @@ stbib.query = (() => {
       attrs: { href: `${util.CATALOG_BASE}APS_ZONES?${params.toString()}` },
     });
 
-    const row = util.el('tr', {
-      className: HINT_CLASS,
-      children: [
-        util.el('td', {
-          attrs: { colspan: '99' },
-          children: [
-            util.el('span', {
-              className: 'stbib-isbn-hint__text',
-              text: 'Das sieht nach einer ISBN aus. Der Katalog findet ISBN nur mit dem Präfix „isbn=“. ',
-            }),
-            link,
-          ],
-        }),
-      ],
+    const text = util.el('span', {
+      className: 'stbib-isbn-hint__text',
+      text: 'Das sieht nach einer ISBN aus. Der Katalog findet ISBN nur mit dem Präfix „isbn=“. ',
     });
 
-    const body = advice.querySelector('tbody') || advice;
-    body.appendChild(row);
+    // #ErrorAdvice ist beim Portal eine Tabelle; falls das ändert, nicht
+    // invalide <tr> in einen Nicht-Tabellen-Container hängen.
+    const body = advice.querySelector('tbody');
+    if (body) {
+      body.appendChild(
+        util.el('tr', {
+          className: HINT_CLASS,
+          children: [util.el('td', { attrs: { colspan: '99' }, children: [text, link] })],
+        })
+      );
+    } else {
+      advice.appendChild(
+        util.el('p', { className: HINT_CLASS, children: [text, link] })
+      );
+    }
   }
 
   /*

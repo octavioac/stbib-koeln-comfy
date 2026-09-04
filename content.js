@@ -62,14 +62,14 @@ function syncViewport() {
   }
 }
 
-function removeInjected(doc) {
-  doc.querySelectorAll(`link[rel="stylesheet"][${LINK_ATTR}]`).forEach((el) => {
+function inject(doc, enabled) {
+  const existing = doc.querySelectorAll(`link[rel="stylesheet"][${LINK_ATTR}]`);
+  if (enabled && matchesStylesheets(existing)) {
+    return;
+  }
+  existing.forEach((el) => {
     el.remove();
   });
-}
-
-function inject(doc, enabled) {
-  removeInjected(doc);
   if (!enabled) {
     return;
   }
@@ -81,6 +81,17 @@ function inject(doc, enabled) {
     link.setAttribute(LINK_ATTR, '1');
     head.appendChild(link);
   }
+}
+
+/** Stimmen die vorhandenen Links exakt mit STYLESHEETS überein (Reihenfolge zählt)? */
+function matchesStylesheets(links) {
+  if (links.length !== STYLESHEETS.length) {
+    return false;
+  }
+  return STYLESHEETS.every((path, index) => {
+    const href = links[index].getAttribute('href') || '';
+    return href.endsWith(path);
+  });
 }
 
 /** @param {Document} doc */
@@ -107,7 +118,7 @@ function applyModules(settings) {
         module.unmount();
       }
     } catch (error) {
-      console.warn(`[stbib] Modul "${module.name}" fehlgeschlagen:`, error);
+      console.warn(`[stbib] Modul "${module?.name ?? '?'}" fehlgeschlagen:`, error);
     }
   }
 }
@@ -117,7 +128,7 @@ function unmountModules() {
     try {
       module.unmount();
     } catch (error) {
-      console.warn(`[stbib] Modul "${module.name}" konnte nicht entfernt werden:`, error);
+      console.warn(`[stbib] Modul "${module?.name ?? '?'}" konnte nicht entfernt werden:`, error);
     }
   }
 }
@@ -137,6 +148,7 @@ function isOwnMutation(record) {
     }
     return (
       node.hasAttribute(stbib.util.OWN_NODE_ATTR) ||
+      node.hasAttribute(LINK_ATTR) ||
       node.closest(`[${stbib.util.OWN_NODE_ATTR}]`) !== null
     );
   });

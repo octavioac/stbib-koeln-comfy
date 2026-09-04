@@ -24,8 +24,16 @@ stbib.loadmore = (() => {
   let nextUrl = '';
   let loading = false;
   let exhausted = false;
-  /** Einmal pro Seitenaufruf ermittelt – nicht bei jedem mount() neu. */
-  let initialised = false;
+  /** Fehlermeldung für die Statusanzeige; bleibt stehen, bis ein Versuch klappt. */
+  let statusError = '';
+  /**
+   * Das BrowseList-Element, für das `nextUrl`/`baseOffset` ermittelt wurden.
+   * Ein neues Element bedeutet eine neue Suche – dann wird neu initialisiert.
+   * (Normalerweise navigiert das Portal pro Suche im iframe, sodass die
+   * Content-Script-Welt ohnehin neu startet; das hier ist die Absicherung
+   * für den Fall, dass die Liste im selben Dokument ausgetauscht wird.)
+   */
+  let initialisedFor = null;
 
   function list() {
     return document.getElementById('BrowseList') || document.querySelector('table.browseList');
@@ -78,23 +86,41 @@ stbib.loadmore = (() => {
     }
   }
 
+  /**
+   * Hängt die Zeilen aus `doc` an die Liste an.
+   * @returns {number | null} Anzahl übernommener Zeilen; `null`, wenn das
+   *   geholte Dokument keine Trefferliste enthält (z. B. abgelaufene Session
+   *   oder Portal-Störung) – das ist ein wiederholbarer Fehlfall, kein Listenende.
+   */
   function importRows(doc) {
     const sourceBody = doc.querySelector('#BrowseList > tbody, table.browseList > tbody');
     const target = tbody();
     if (!sourceBody || !target) {
-      return 0;
+      return null;
     }
 
     const rows = Array.from(sourceBody.querySelectorAll(':scope > tr'));
     let added = 0;
     for (const row of rows) {
       const imported = document.importNode(row, true);
-      // Vorsichtsmaßnahme: keine Skripte aus geholtem Markup übernehmen.
-      imported.querySelectorAll('script').forEach((node) => node.remove());
+      // Vorsichtsmaßnahme: nichts Ausführbares aus geholtem Markup übernehmen.
+      stripExecutable(imported);
       target.appendChild(imported);
       added += 1;
     }
     return added;
+  }
+
+  /** Entfernt `<script>`-Knoten und Inline-Handler (`onclick` & Co.). */
+  function stripExecutable(root) {
+    root.querySelectorAll('script').forEach((node) => node.remove());
+    for (const node of root.querySelectorAll('*')) {
+      for (const attr of Array.from(node.attributes)) {
+        if (/^on/i.test(attr.name)) {
+          node.removeAttribute(attr.name);
+        }
+      }
+    }
   }
 
   function updateBar() {
@@ -108,9 +134,11 @@ stbib.loadmore = (() => {
     const total = totalHits();
     const shown = loadedThrough();
 
-    status.textContent = total
-      ? `Treffer ${baseOffset + 1}–${shown} von ${total}`
-      : `${rowCount()} Treffer geladen`;
+    status.textContent = statusError
+      ? statusError
+      : total
+        ? `Treffer ${baseOffset + 1}–${shown} von ${total}`
+        : `${rowCount()} Treffer geladen`;
 
     if (loading) {
       button.disabled = true;
@@ -131,28 +159,30 @@ stbib.loadmore = (() => {
     updateBar();
 
     try {
-      const doc = await util.fetchDocument(new URL(nextUrl, location.href).href);
+      const fetchedUrl = new URL(nextUrl, location.href).href;
+      const doc = await util.fetchDocument(fetchedUrl);
       const added = importRows(doc);
 
-      if (!added) {
-        exhausted = true;
+      if (added == null) {
+        // Keine Trefferliste in der Antwort: Session weg oder Portal gestört.
+        // Nicht als Listenende interpretieren – der Nutzer kann es erneut versuchen.
+        console.warn('[stbib] Nachladen lieferte keine Trefferliste:', fetchedUrl);
+        statusError = 'Laden fehlgeschlagen – bitte erneut versuchen.';
       } else {
+        statusError = '';
         syncPortalPageDisplay(doc);
         const followUp = pageDownUrl(doc);
-        // Fehlt der Link, war das die letzte Seite.
-        if (followUp) {
-          nextUrl = followUp;
-        } else {
+        // Fehlt der Link, war das die letzte Seite. Auflösen gegen die geholte
+        // URL, nicht gegen location.href – die Basis der Weiterführung ist die
+        // Seite, von der der Link stammt.
+        nextUrl = followUp ? new URL(followUp, fetchedUrl).href : '';
+        if (!followUp) {
           exhausted = true;
         }
       }
     } catch (error) {
       console.warn('[stbib] Weitere Treffer konnten nicht geladen werden:', error);
-      const bar = document.querySelector(`.${BAR_CLASS}`);
-      if (bar) {
-        bar.querySelector(`.${BAR_CLASS}__status`).textContent =
-          'Laden fehlgeschlagen – bitte erneut versuchen.';
-      }
+      statusError = 'Laden fehlgeschlagen – bitte erneut versuchen.';
     } finally {
       loading = false;
       updateBar();
@@ -189,17 +219,18 @@ stbib.loadmore = (() => {
       return;
     }
 
-    if (!initialised) {
+    if (initialisedFor !== table) {
       /*
-       * Nur beim ersten mount(): `Query.Page` wird nach jedem Nachladen auf den
+       * Nur für eine neue Liste: `Query.Page` wird nach jedem Nachladen auf den
        * neuen Server-Cursor geschrieben. Würde `baseOffset` bei einem späteren
        * mount() – etwa nach Aus- und Wiedereinschalten – erneut daraus
-       * berechnet, zählte die Leiste falsch.
+       * berechnet, zählte die Leiste falsch. Eine andere Tabellen-Instanz ist
+       * dagegen eine neue Suche und wird neu initialisiert.
        */
       nextUrl = pageDownUrl(document);
       exhausted = !nextUrl;
       baseOffset = (currentPage() - 1) * 10;
-      initialised = true;
+      initialisedFor = table;
     }
 
     mountBar();
