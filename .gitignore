@@ -4,3 +4,4 @@ playwright-report/
 playwright/.cache/
 *.zip
 .DS_Store
+.cursor/
