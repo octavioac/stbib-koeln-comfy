@@ -15,6 +15,7 @@ const STYLESHEETS = [
   'styles/layout.css',
   'styles/components.css',
   'styles/results.css',
+  'styles/pages.css',
   'styles/features.css',
   'styles/print.css',
   'styles/theme-dark.css',

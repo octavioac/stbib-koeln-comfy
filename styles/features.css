@@ -26,7 +26,7 @@
   color: var(--stbib-text);
   text-align: center;
   cursor: pointer;
-  background: linear-gradient(180deg, #ffffff 0%, #f1f4f7 100%);
+  background: var(--stbib-button-gradient);
   border: 1px solid var(--stbib-border-strong);
   border-radius: var(--stbib-radius-sm);
   transition:
@@ -37,7 +37,7 @@
 .stbib-holdings__toggle:hover:not(:disabled),
 .stbib-toolbar__button:hover:not(:disabled),
 .stbib-loadmore__button:hover:not(:disabled) {
-  background: linear-gradient(180deg, #ffffff 0%, #e6ecf3 100%);
+  background: var(--stbib-button-gradient-hover);
   border-color: var(--stbib-link);
 }
 
@@ -265,8 +265,8 @@
 .stbib-isbn-hint > td {
   padding: 0.75rem 1rem !important;
   font-size: var(--stbib-fs-small);
-  background: #e8f2fc;
-  border: 1px solid #8fb4d9;
+  background: var(--stbib-info-bg);
+  border: 1px solid var(--stbib-info-border);
   border-radius: var(--stbib-radius-sm);
 }
 
@@ -301,26 +301,5 @@
 
   .stbib-holdings__body {
     grid-template-columns: 1fr;
-  }
-}
-
-/* -------------------------------------------------------------- Drucken */
-
-@media print {
-  .stbib-holdings__toggle,
-  .stbib-toolbar,
-  .stbib-loadmore__button,
-  .stbib-facet-filter {
-    display: none !important;
-  }
-
-  /* Geladener Bestand ist im Ausdruck die nützlichste Information. */
-  .stbib-holdings__body[hidden] {
-    display: block !important;
-  }
-
-  .stbib-branch {
-    background: #fff !important;
-    break-inside: avoid;
   }
 }

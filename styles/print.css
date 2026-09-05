@@ -38,3 +38,24 @@
     color: #000 !important;
   }
 }
+
+/* -------------------------------------------------------------- Drucken */
+
+@media print {
+  .stbib-holdings__toggle,
+  .stbib-toolbar,
+  .stbib-loadmore__button,
+  .stbib-facet-filter {
+    display: none !important;
+  }
+
+  /* Geladener Bestand ist im Ausdruck die nützlichste Information. */
+  .stbib-holdings__body[hidden] {
+    display: block !important;
+  }
+
+  .stbib-branch {
+    background: #fff !important;
+    break-inside: avoid;
+  }
+}

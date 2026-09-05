@@ -38,7 +38,7 @@ div#Principal {
 
 #Entete {
   border-bottom: 4px solid var(--stbib-bg-header-bar) !important;
-  background-color: #fff !important;
+  background-color: var(--stbib-bg-card) !important;
   height: auto !important;
   min-height: 120px;
   margin-bottom: 0 !important;
@@ -54,10 +54,11 @@ div#Principal {
   height: auto !important;
   margin-top: 0.5rem !important;
   font-family: var(--stbib-font-sans) !important;
-  background: linear-gradient(180deg, #fafbfc 0%, #f4f5f7 100%) !important;
+  background: var(--stbib-bar-gradient) !important;
+  background-color: var(--stbib-bar-bg) !important;
   border: none !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
-  box-shadow: inset 0 -1px 0 rgba(255, 253, 253, 0.65) !important;
+  border-bottom: 1px solid var(--stbib-border-hairline) !important;
+  box-shadow: inset 0 -1px 0 var(--stbib-bar-highlight) !important;
 }
 
 /* Portal: Toolbar oft in verschachtelten Tabellen mit vertikalen Trennlinien */
@@ -84,13 +85,6 @@ div#Principal {
 #toolBar td,
 #toolBar th {
   border: none !important;
-  border-width: 0 !important;
-  border-right: none !important;
-  border-left: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  border-inline: none !important;
-  border-block: none !important;
   background: transparent !important;
   background-image: none !important;
   padding: 0 !important;
@@ -171,13 +165,13 @@ div#Principal {
     background 0.15s ease,
     color 0.15s ease,
     border-color 0.15s ease,
-    box-shadow 0.15s ease !important;
+    box-shadow 0.15s ease;
 }
 
 .leftNavButton:hover,
 #toolBar li > a:hover:not(.button):not(.button_blue):not(.button_gray),
 #toolBar td a:hover:not(.leftNavButton):not(.button):not(.button_blue):not(.button_gray) {
-  background: rgba(15, 23, 42, 0.045) !important;
+  background: var(--stbib-nav-hover) !important;
   color: var(--stbib-text) !important;
 }
 
@@ -186,10 +180,10 @@ div#Principal {
 li.hi .leftNavButton,
 #toolBar li.hi > a:not(.button):not(.button_blue):not(.button_gray),
 #toolBar .MenuQuickSearch.hi a:not(.button):not(.button_blue):not(.button_gray) {
-  background: rgba(184, 9, 24, 0.09) !important;
+  background: var(--stbib-nav-active-bg) !important;
   color: var(--stbib-text) !important;
-  border-color: rgba(184, 9, 24, 0.2) !important;
-  box-shadow: 0 1px 0 rgba(184, 9, 24, 0.12) !important;
+  border-color: var(--stbib-nav-active-border) !important;
+  box-shadow: 0 1px 0 var(--stbib-nav-active-glow) !important;
 }
 
 /*
@@ -203,11 +197,12 @@ li.hi .leftNavButton,
   margin-top: 0.85rem !important;
   margin-bottom: 0.65rem !important;
   font-family: var(--stbib-font-sans) !important;
-  background: linear-gradient(180deg, #fafbfc 0%, #f4f5f7 100%) !important;
+  background: var(--stbib-bar-gradient) !important;
+  background-color: var(--stbib-bar-bg) !important;
   border: none !important;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.07) !important;
+  border-bottom: 1px solid var(--stbib-border-hairline) !important;
   border-radius: 0 0 var(--stbib-radius-sm) var(--stbib-radius-sm) !important;
-  box-shadow: inset 0 -1px 0 rgba(255, 253, 253, 0.65) !important;
+  box-shadow: inset 0 -1px 0 var(--stbib-bar-highlight) !important;
 }
 
 #ZoneMenu ul {
@@ -282,7 +277,7 @@ li.hi .leftNavButton,
   transition:
     background 0.15s ease,
     color 0.15s ease,
-    border-color 0.15s ease !important;
+    border-color 0.15s ease;
 }
 
 #ZoneMenu li a > div {
@@ -292,7 +287,7 @@ li.hi .leftNavButton,
 
 #ZoneMenu li a:hover {
   color: var(--stbib-text) !important;
-  background: rgba(15, 23, 42, 0.045) !important;
+  background: var(--stbib-nav-hover) !important;
 }
 
 #ZoneMenu li a:hover span {
@@ -305,10 +300,10 @@ li.hi .leftNavButton,
 
 #ZoneMenu li.Encours a:link,
 #ZoneMenu li.Encours a:visited {
-  background: rgba(184, 9, 24, 0.09) !important;
+  background: var(--stbib-nav-active-bg) !important;
   color: var(--stbib-text) !important;
-  border-color: rgba(184, 9, 24, 0.2) !important;
-  box-shadow: 0 1px 0 rgba(184, 9, 24, 0.12) !important;
+  border-color: var(--stbib-nav-active-border) !important;
+  box-shadow: 0 1px 0 var(--stbib-nav-active-glow) !important;
 }
 
 /* Content vollständig nutzbar (Veranstaltungs-Box / Formular bündig) */
@@ -465,7 +460,7 @@ html.stbib-form-document #titleContainer2 {
 }
 
 .pdp2 {
-  font-size: 0.8125rem !important;
+  font-size: var(--stbib-fs-meta) !important;
   color: var(--stbib-text-muted) !important;
 }
 
@@ -526,7 +521,6 @@ html.stbib-form-document #titleContainer2 {
   #toolBar ul {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
     padding: 0.7rem 0.45rem 0.65rem !important;
   }
 
@@ -541,7 +535,6 @@ html.stbib-form-document #titleContainer2 {
   #ZoneMenu ul {
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
     padding-left: 0.45rem !important;
     padding-right: 0.45rem !important;
   }

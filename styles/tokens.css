@@ -1,9 +1,13 @@
-/* Stadtbibliothek Köln Katalog – Design-Tokens (v1, feste Skalierung) */
+/* Stadtbibliothek Köln Katalog – Design-Tokens (feste Skalierung)
+ *
+ * Alle Farbwerte der Komfort-Ansicht laufen über diese Tokens. Das dunkle
+ * Schema überschreibt ausschließlich diesen Block (styles/theme-dark.css) –
+ * Komponenten-Styles selbst enthalten keine festen Farben mehr.
+ */
 
 :root {
   /* Typography */
   --stbib-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --stbib-font-serif: Georgia, "Times New Roman", serif;
   --stbib-fs-body: 1rem;
   --stbib-fs-small: 0.9375rem; /* 15px */
   --stbib-fs-meta: 0.875rem; /* 14px min for secondary */
@@ -17,17 +21,48 @@
   --stbib-bg-page: #f4f5f7;
   --stbib-bg-card: #ffffff;
   --stbib-bg-header-bar: #b80918;
+  /* Primäraktion der Portal-Buttons (a.button); abgedunkelt für AA-Kontrast */
+  --stbib-bg-button: #b35a00;
+  /* Sekundäre Portal-Buttons (button_blue / button_gray) */
+  --stbib-bg-secondary: #e8eef5;
+  --stbib-bg-muted: #eef1f4;
   --stbib-border: #d8dee6;
   --stbib-border-strong: #9aa7b8;
+  --stbib-border-hairline: rgba(15, 23, 42, 0.07);
   --stbib-text: #1a1d21;
   --stbib-text-muted: #4a5563;
   --stbib-link: #0b5cab;
   --stbib-link-hover: #084a8f;
   --stbib-focus: #2563eb;
 
+  /* Navigationsleisten (#toolBar / #ZoneMenu) */
+  --stbib-bar-gradient: linear-gradient(180deg, #fafbfc 0%, #f4f5f7 100%);
+  --stbib-bar-bg: #f6f7f9;
+  --stbib-bar-highlight: rgba(255, 255, 255, 0.65);
+  --stbib-nav-hover: rgba(15, 23, 42, 0.045);
+  --stbib-nav-active-bg: rgba(184, 9, 24, 0.09);
+  --stbib-nav-active-border: rgba(184, 9, 24, 0.2);
+  --stbib-nav-active-glow: rgba(184, 9, 24, 0.12);
+
+  /* Steuerelemente: Facetten-Köpfe, eigene Schaltflächen */
+  --stbib-bg-control: linear-gradient(180deg, #f3f5f7 0%, #e8ecf0 100%);
+  --stbib-bg-control-hover: linear-gradient(180deg, #eef2f6 0%, #dfe6ee 100%);
+  --stbib-button-gradient: linear-gradient(180deg, #ffffff 0%, #f1f4f7 100%);
+  --stbib-button-gradient-hover: linear-gradient(180deg, #ffffff 0%, #e6ecf3 100%);
+  --stbib-input-bg: #ffffff;
+  --stbib-facet-hover: #eef6ff;
+  --stbib-action-hover: rgba(11, 92, 171, 0.07);
+
+  /* Infokästen (Suchanzeige, Filter-Chips, ISBN-Hinweis) */
+  --stbib-info-bg: #e8f2fc;
+  --stbib-info-border: #8fb4d9;
+  --stbib-info-chip-bg: #e8f2fc;
+
   /* Touch / interaction */
   --stbib-touch-min: 44px;
   --stbib-shadow-card: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --stbib-shadow-popover: 0 12px 28px rgba(15, 23, 42, 0.18);
+  --stbib-shadow-panel: 0 1px 3px rgba(15, 23, 42, 0.07);
 
   /* Statusfarben – Bestand (verfügbar / entliehen / neutral) */
   --stbib-ok-bg: #e6f4ea;

@@ -81,7 +81,7 @@ select {
   padding: 0.5rem 0.75rem !important;
   border-radius: var(--stbib-radius-sm) !important;
   border: 1px solid var(--stbib-border-strong) !important;
-  background-color: #fff !important;
+  background-color: var(--stbib-input-bg) !important;
   color: var(--stbib-text) !important;
   box-sizing: border-box !important;
 }
@@ -114,7 +114,7 @@ a.button_gray:visited {
   border: 1px solid transparent !important;
   background: none !important;
   background-image: none !important;
-  background-color: #e47100 !important;
+  background-color: var(--stbib-bg-button) !important;
   color: #fff !important;
   box-shadow: none !important;
 }
@@ -136,7 +136,7 @@ a.button_gray span {
 a.button_blue,
 a.button_blue:link,
 a.button_blue:visited {
-  background-color: #e8eef5 !important;
+  background-color: var(--stbib-bg-secondary) !important;
   color: var(--stbib-text) !important;
   border-color: var(--stbib-border-strong) !important;
 }
@@ -144,7 +144,7 @@ a.button_blue:visited {
 a.button_gray,
 a.button_gray:link,
 a.button_gray:visited {
-  background-color: #eef1f4 !important;
+  background-color: var(--stbib-bg-muted) !important;
   color: var(--stbib-text) !important;
   border-color: var(--stbib-border-strong) !important;
 }
@@ -157,4 +157,14 @@ a.button_blue:hover {
 a.button span font,
 a.button_blue span font {
   color: inherit !important;
+}
+
+/* Weniger Bewegung, wenn das System es verlangt */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

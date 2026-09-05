@@ -1,3 +1,9 @@
+/*
+ * Toolbar-Popup. Nutzt die Design-Tokens aus styles/tokens.css; das dunkle
+ * Popup überschreibt dieselben Tokens am body (analog zu theme-dark.css am
+ * <html> der Katalog-Seiten).
+ */
+
 * {
   box-sizing: border-box;
 }
@@ -6,10 +12,10 @@ body {
   width: 300px;
   margin: 0;
   padding: 14px 16px 16px;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--stbib-font-sans);
   font-size: 14px;
-  color: #1a1d21;
-  background: #f8f9fb;
+  color: var(--stbib-text);
+  background: var(--stbib-bg-page);
 }
 
 header {
@@ -20,7 +26,7 @@ header {
 }
 
 .logo {
-  border-radius: 6px;
+  border-radius: var(--stbib-radius-sm);
   flex-shrink: 0;
 }
 
@@ -34,7 +40,7 @@ h1 {
 .subtitle {
   margin: 2px 0 0;
   font-size: 12px;
-  color: #64748b;
+  color: var(--stbib-text-muted);
 }
 
 .visually-hidden {
@@ -59,9 +65,9 @@ h1 {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 14px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  background: var(--stbib-bg-card);
+  border: 1px solid var(--stbib-border);
+  border-radius: var(--stbib-radius);
   cursor: pointer;
   user-select: none;
 }
@@ -74,16 +80,16 @@ h1 {
 .panel--features {
   margin-top: 18px;
   padding-top: 14px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--stbib-border);
 }
 
 .section-title {
   margin: 0 0 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--stbib-text-muted);
 }
 
 /* Komfort-Design aus → Funktionsschalter sind wirkungslos */
@@ -98,23 +104,23 @@ h1 {
 code {
   padding: 1px 4px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10px;
+  font-size: 12px;
   border-radius: 4px;
-  background: #eef1f5;
+  background: var(--stbib-neutral-bg);
 }
 
 .switch-caption {
   margin: 6px 14px 0;
   padding: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   font-weight: 400;
-  color: #64748b;
+  color: var(--stbib-text-muted);
 }
 
 .switch-caption strong {
   font-weight: 600;
-  color: #475569;
+  color: var(--stbib-text);
 }
 
 .switch-label {
@@ -139,7 +145,7 @@ code {
 .slider {
   position: absolute;
   inset: 0;
-  background: #cbd5e1;
+  background: var(--stbib-border-strong);
   border-radius: 28px;
   transition: background 0.2s ease;
 }
@@ -151,14 +157,14 @@ code {
   width: 22px;
   left: 3px;
   bottom: 3px;
-  background: #fff;
+  background: var(--stbib-bg-card);
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease;
 }
 
 .switch input:checked + .slider {
-  background: #c41e3a;
+  background: var(--stbib-bg-header-bar);
 }
 
 .switch input:checked + .slider::before {
@@ -166,65 +172,46 @@ code {
 }
 
 .switch input:focus-visible + .slider {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--stbib-focus);
   outline-offset: 2px;
 }
 
 .hint {
   margin: 12px 0 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
-  color: #64748b;
+  color: var(--stbib-text-muted);
 }
 
 kbd {
-  font-size: 10px;
+  font-size: 12px;
   padding: 1px 4px;
   border-radius: 4px;
-  border: 1px solid #cbd5e1;
-  background: #fff;
+  border: 1px solid var(--stbib-border-strong);
+  background: var(--stbib-bg-card);
 }
 
 /* Dunkles Popup, wenn „Dunkles Design“ aktiv */
 body.popup--dark {
-  color: #e8eaed;
-  background: #141618;
+  --stbib-bg-page: #131416;
+  --stbib-bg-card: #1c2024;
+  --stbib-bg-header-bar: #a20d18;
+  --stbib-border: #343a43;
+  --stbib-border-strong: #475569;
+  --stbib-text: #e8eaed;
+  --stbib-text-muted: #94a3b8;
+  --stbib-neutral-bg: #252a31;
+  --stbib-focus: #60a5fa;
+
+  color: var(--stbib-text);
+  background: var(--stbib-bg-page);
 }
 
-body.popup--dark .subtitle,
-body.popup--dark .hint,
-body.popup--dark .switch-caption {
-  color: #94a3b8;
-}
-
-body.popup--dark .switch-caption strong {
-  color: #cbd5e1;
-}
-
-body.popup--dark .switch-row {
-  background: #1c2024;
-  border-color: #343a43;
-}
-
-body.popup--dark kbd {
-  background: #252a31;
-  border-color: #475569;
-  color: #e8eaed;
-}
-
-body.popup--dark .switch input:checked + .slider {
-  background: #a20d18;
-}
-
-body.popup--dark .panel--features {
-  border-top-color: #343a43;
-}
-
-body.popup--dark .section-title {
-  color: #94a3b8;
-}
-
-body.popup--dark code {
-  background: #252a31;
-  color: #e8eaed;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }
