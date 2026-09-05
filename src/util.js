@@ -120,6 +120,107 @@ stbib.util = (() => {
     };
   }
 
+  /**
+   * Sammelt reversible Eingriffe in Portal-Knoten und stellt den
+   * ursprünglichen Zustand mit `restore()` wieder her. Jedes Modul, das
+   * Portal-Knoten verändert, nutzt eine eigene Instanz; `restore()` leert die
+   * Aufzeichnungen, danach darf die Instanz nicht mehr benutzt werden.
+   */
+  function reverter() {
+    /** element → Map(Attributname → ursprünglicher Wert oder `null` = fehlte) */
+    const attributes = new Map();
+    /** element → ursprünglicher textContent */
+    const texts = new Map();
+    /** element → ursprüngliche Kindknoten (leben als detached Nodes weiter) */
+    const children = new Map();
+    /** [element, className] in Reihenfolge des Hinzufügens */
+    const classes = [];
+    /** {node, parent, next} in Reihenfolge des Verschiebens */
+    const placements = [];
+
+    function setAttribute(element, name, value) {
+      if (!element || element.getAttribute(name) === value) {
+        return;
+      }
+      if (!attributes.has(element)) {
+        attributes.set(element, new Map());
+      }
+      const map = attributes.get(element);
+      if (!map.has(name)) {
+        map.set(name, element.getAttribute(name));
+      }
+      element.setAttribute(name, value);
+    }
+
+    function setText(element, value) {
+      if (!element || texts.has(element)) {
+        return;
+      }
+      texts.set(element, element.textContent || '');
+      element.textContent = value;
+    }
+
+    function setChildren(element, ...replacement) {
+      if (!element || children.has(element)) {
+        return;
+      }
+      children.set(element, Array.from(element.childNodes));
+      element.replaceChildren(...replacement);
+    }
+
+    function addClass(element, className) {
+      if (!element || element.classList.contains(className)) {
+        return;
+      }
+      element.classList.add(className);
+      classes.push([element, className]);
+    }
+
+    /** Verschiebt `node` direkt vor `target` und merkt die alte Position. */
+    function moveBefore(node, target) {
+      if (!node || !target?.parentElement) {
+        return;
+      }
+      placements.push({ node, parent: node.parentNode, next: node.nextSibling });
+      target.parentElement.insertBefore(node, target);
+    }
+
+    function restore() {
+      placements.reverse().forEach(({ node, parent, next }) => {
+        if (parent?.isConnected) {
+          parent.insertBefore(node, next?.parentNode === parent ? next : null);
+        }
+      });
+      placements.length = 0;
+
+      children.forEach((nodes, element) => {
+        element.replaceChildren(...nodes);
+      });
+      children.clear();
+
+      texts.forEach((value, element) => {
+        element.textContent = value;
+      });
+      texts.clear();
+
+      attributes.forEach((map, element) => {
+        map.forEach((value, name) => {
+          if (value == null) {
+            element.removeAttribute(name);
+          } else {
+            element.setAttribute(name, value);
+          }
+        });
+      });
+      attributes.clear();
+
+      classes.reverse().forEach(([element, className]) => element.classList.remove(className));
+      classes.length = 0;
+    }
+
+    return { setAttribute, setText, setChildren, addClass, moveBefore, restore };
+  }
+
   function normalizeSpace(value) {
     return String(value || '').replace(/\s+/g, ' ').trim();
   }
@@ -187,6 +288,7 @@ stbib.util = (() => {
     noticeUrl,
     qsa,
     recordId,
+    reverter,
     removeOwnNodes,
     splitAtBreaks,
   };

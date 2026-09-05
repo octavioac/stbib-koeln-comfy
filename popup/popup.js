@@ -35,11 +35,16 @@ function applyDependentState(modernEnabled) {
   }
 }
 
+/** Gespeicherter Wert oder Vorgabe – `undefined` (noch nie gesetzt) nutzt die Vorgabe. */
+function checkedState(stored, { key, fallback }) {
+  return stored[key] ?? fallback;
+}
+
 chrome.storage.local.get(DEFAULTS, (stored) => {
-  for (const [id, { key, fallback }] of Object.entries(TOGGLES)) {
+  for (const [id, toggle] of Object.entries(TOGGLES)) {
     const input = document.getElementById(id);
     if (input) {
-      input.checked = fallback ? stored[key] !== false : stored[key] === true;
+      input.checked = checkedState(stored, toggle);
     }
   }
   applyPopupChrome(stored[DARK_KEY] === true);

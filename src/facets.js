@@ -29,8 +29,11 @@ stbib.facets = (() => {
   const WRAPPED_FLAG = 'stbibFacetWrapped';
   const FILTERED_FLAG = 'stbibFacetFiltered';
   const ACTIVE_FILTER_CLASS = 'stbib-active-filter';
+  /** Bereits umgebaute Filter-`<b>`-Knoten → ihr RemoveClause-Link. */
   const activeFilters = new Map();
+  /** Einträge offen und positioniert (Header-Knoten), für Resize & Cleanup. */
   const facetHeaderHandlers = new Map();
+  let filterUndo = null;
   /** Ab so vielen Einträgen lohnt ein Filterfeld. */
   const FILTER_THRESHOLD = 10;
 
@@ -165,67 +168,74 @@ stbib.facets = (() => {
         continue;
       }
 
-      activeFilters.set(filter, {
-        nodes: Array.from(filter.childNodes),
-        link,
-        ariaLabel: link.getAttribute('aria-label'),
-        title: link.getAttribute('title'),
-      });
-
-      const text = util.el('span', {
-        className: `${ACTIVE_FILTER_CLASS}__label`,
-        text: label,
-      });
-      filter.replaceChildren(text, link);
-      filter.classList.add(ACTIVE_FILTER_CLASS);
+      activeFilters.set(filter, link);
+      filterUndo = filterUndo || util.reverter();
+      filterUndo.setChildren(
+        filter,
+        util.el('span', { className: `${ACTIVE_FILTER_CLASS}__label`, text: label }),
+        link
+      );
+      filterUndo.addClass(filter, ACTIVE_FILTER_CLASS);
       link.classList.add(`${ACTIVE_FILTER_CLASS}__remove`);
-      link.setAttribute('aria-label', `Filter ${label} entfernen`);
-      link.setAttribute('title', `Filter ${label} entfernen`);
+      filterUndo.setAttribute(link, 'aria-label', `Filter ${label} entfernen`);
+      filterUndo.setAttribute(link, 'title', `Filter ${label} entfernen`);
     }
   }
 
   function unmountActiveFilters() {
-    activeFilters.forEach(({ nodes, link, ariaLabel, title }, filter) => {
-      filter.replaceChildren(...nodes);
-      filter.classList.remove(ACTIVE_FILTER_CLASS);
+    for (const link of activeFilters.values()) {
       link.classList.remove(`${ACTIVE_FILTER_CLASS}__remove`);
-      if (ariaLabel == null) {
-        link.removeAttribute('aria-label');
-      } else {
-        link.setAttribute('aria-label', ariaLabel);
-      }
-      if (title == null) {
-        link.removeAttribute('title');
-      } else {
-        link.setAttribute('title', title);
-      }
-    });
+    }
     activeFilters.clear();
+    filterUndo?.restore();
+    filterUndo = null;
   }
 
   function positionFacetPopover(header) {
+    applyFacetMeasurements([measureFacet(header)]);
+  }
+
+  /**
+   * Misst einen geöffneten Facetten-Header. Getrennt vom Schreiben, damit
+   * mehrere Offsets gebündelt werden können (kein Read/Write-Wechsel → kein
+   * wiederholtes Layout-Forcing beim Resize).
+   */
+  function measureFacet(header) {
     const tile = header.closest(`.${TILE_CLASS}`);
     const list = header.nextElementSibling;
     const box = tile?.parentElement;
     if (!tile || !list?.classList.contains('FacetsList') || !box) {
-      return;
+      return { header, tile: null };
     }
     if (header.classList.contains('arrow_down')) {
-      tile.style.removeProperty('--stbib-facet-popover-width');
-      tile.style.removeProperty('--stbib-facet-popover-offset');
-      return;
+      return { header, tile, closed: true };
     }
 
     const boxRect = box.getBoundingClientRect();
     const tileRect = tile.getBoundingClientRect();
     const width = Math.min(512, boxRect.width, Math.max(0, window.innerWidth - 32));
     const offset = Math.min(0, boxRect.right - tileRect.left - width);
-    tile.style.setProperty('--stbib-facet-popover-width', `${width}px`);
-    tile.style.setProperty('--stbib-facet-popover-offset', `${offset}px`);
+    return { header, tile, width, offset };
+  }
+
+  function applyFacetMeasurements(measurements) {
+    for (const { header, tile, closed, width, offset } of measurements) {
+      if (!tile) {
+        continue;
+      }
+      if (closed || width == null) {
+        tile.style.removeProperty('--stbib-facet-popover-width');
+        tile.style.removeProperty('--stbib-facet-popover-offset');
+        continue;
+      }
+      tile.style.setProperty('--stbib-facet-popover-width', `${width}px`);
+      tile.style.setProperty('--stbib-facet-popover-offset', `${offset}px`);
+    }
   }
 
   function positionOpenFacets() {
-    facetHeaderHandlers.forEach((_, header) => positionFacetPopover(header));
+    // Erst alle Messungen, dann alle Schreibvorgänge.
+    applyFacetMeasurements(Array.from(facetHeaderHandlers.keys(), measureFacet));
   }
 
   function mountFacetPopovers() {

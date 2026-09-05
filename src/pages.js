@@ -7,48 +7,18 @@ stbib.pages = (() => {
   const FORM_DOCUMENT_CLASS = 'stbib-form-document';
   const QUICK_PAGE_CLASS = 'stbib-quicksearch-page';
   const RESERVATION_PAGE_CLASS = 'stbib-reservation-page';
-  const addedClasses = [];
-  const originalAttributes = new Map();
-  const originalTexts = new Map();
+  const PAGE_FLAG = 'stbibPages';
+  let undo = null;
   let activePage = null;
   let activeKind = null;
 
-  function addClass(element, className) {
-    if (element && !element.classList.contains(className)) {
-      element.classList.add(className);
-      addedClasses.push([element, className]);
-    }
-  }
-
-  function setAttribute(element, name, value) {
-    if (!element || element.getAttribute(name) === value) {
-      return;
-    }
-    if (!originalAttributes.has(element)) {
-      originalAttributes.set(element, new Map());
-    }
-    const attributes = originalAttributes.get(element);
-    if (!attributes.has(name)) {
-      attributes.set(name, element.getAttribute(name));
-    }
-    element.setAttribute(name, value);
-  }
-
-  function setText(element, value) {
-    if (!element || originalTexts.has(element)) {
-      return;
-    }
-    originalTexts.set(element, element.textContent || '');
-    element.textContent = value;
-  }
-
   function mountQuickSearch(page, form) {
-    addClass(document.documentElement, FORM_DOCUMENT_CLASS);
-    addClass(page, QUICK_PAGE_CLASS);
+    undo.addClass(document.documentElement, FORM_DOCUMENT_CLASS);
+    undo.addClass(page, QUICK_PAGE_CLASS);
 
     const wrapper = form.querySelector('.wrapper');
     const label = wrapper?.querySelector('label[for="Query"]');
-    setText(label, 'Suchbegriff');
+    undo.setText(label, 'Suchbegriff');
 
     if (wrapper && !wrapper.querySelector('.stbib-quicksearch-intro')) {
       wrapper.prepend(
@@ -59,7 +29,7 @@ stbib.pages = (() => {
       );
     }
 
-    setAttribute(form.querySelector('#Query'), 'autocomplete', 'off');
+    undo.setAttribute(form.querySelector('#Query'), 'autocomplete', 'off');
   }
 
   function tableContaining(element, text) {
@@ -81,28 +51,31 @@ stbib.pages = (() => {
   }
 
   function mountReservation(page) {
-    addClass(document.documentElement, FORM_DOCUMENT_CLASS);
-    addClass(page, RESERVATION_PAGE_CLASS);
+    undo.addClass(document.documentElement, FORM_DOCUMENT_CLASS);
+    undo.addClass(page, RESERVATION_PAGE_CLASS);
 
     const titleValue = Array.from(page.querySelectorAll('span.darkLink')).find((element) =>
       tableContaining(element, 'Titel')
     );
-    addClass(tableContaining(titleValue, 'Notation'), 'stbib-reservation-meta');
+    undo.addClass(tableContaining(titleValue, 'Notation'), 'stbib-reservation-meta');
 
     // Select gezielt über den umgebenden Kontext finden: Das erste <select>
     // der Seite muss nicht die Abholbibliothek sein.
     const pickupHint = smallestTextContainer(page, 'Bitte wählen Sie die Bibliothek');
     const pickup = pickupHint?.closest('table')?.querySelector('select') || null;
     if (pickup) {
-      addClass(tableContaining(pickup, 'Bitte wählen Sie die Bibliothek'), 'stbib-reservation-pickup');
-      setAttribute(pickup, 'aria-label', 'Abholbibliothek');
+      undo.addClass(
+        tableContaining(pickup, 'Bitte wählen Sie die Bibliothek'),
+        'stbib-reservation-pickup'
+      );
+      undo.setAttribute(pickup, 'aria-label', 'Abholbibliothek');
     }
 
-    addClass(
+    undo.addClass(
       smallestTextContainer(page, 'Vormerkbare Exemplare'),
       'stbib-reservation-status'
     );
-    addClass(
+    undo.addClass(
       smallestTextContainer(page, 'Das Entgelt für die Vormerkung'),
       'stbib-reservation-fee'
     );
@@ -113,9 +86,9 @@ stbib.pages = (() => {
         control.tagName === 'INPUT' ? control.value : control.textContent
       );
       if (/^(Bestätigen|Senden)$/.test(label)) {
-        addClass(control, 'stbib-reservation-confirm');
+        undo.addClass(control, 'stbib-reservation-confirm');
       } else if (label === 'Abbrechen') {
-        addClass(control, 'stbib-reservation-cancel');
+        undo.addClass(control, 'stbib-reservation-cancel');
       }
     });
 
@@ -126,15 +99,15 @@ stbib.pages = (() => {
       while (actionRow && !actionRow.contains(cancel)) {
         actionRow = actionRow.parentElement?.closest('tr') || null;
       }
-      addClass(actionRow, 'stbib-reservation-actions');
+      undo.addClass(actionRow, 'stbib-reservation-actions');
     }
 
     const borrower = page.querySelector('#BRWR');
     const pin = page.querySelector('#PIN');
     if (borrower && pin) {
-      addClass(tableContaining(pin, 'Bibliotheksausweises'), 'stbib-reservation-login');
-      setAttribute(borrower, 'autocomplete', 'username');
-      setAttribute(pin, 'autocomplete', 'current-password');
+      undo.addClass(tableContaining(pin, 'Bibliotheksausweises'), 'stbib-reservation-login');
+      undo.setAttribute(borrower, 'autocomplete', 'username');
+      undo.setAttribute(pin, 'autocomplete', 'current-password');
     }
   }
 
@@ -157,37 +130,32 @@ stbib.pages = (() => {
     if (activePage && (activePage !== page || activeKind !== kind)) {
       unmount();
     }
+
+    // Bereits bearbeitete Seiten nicht erneut durchsuchen – mount() läuft bei
+    // jedem Observer-Durchlauf, und die Text-Scans sind die teuersten Aufrufe.
+    if (activePage === page && activeKind === kind && page.dataset[PAGE_FLAG] === kind) {
+      return;
+    }
+
+    undo = undo || stbib.util.reverter();
     activePage = page;
     activeKind = kind;
 
     if (kind === 'quick') {
       mountQuickSearch(page, quickForm);
-      return;
+    } else {
+      mountReservation(page);
     }
-    mountReservation(page);
+    page.dataset[PAGE_FLAG] = kind;
   }
 
   function unmount() {
     stbib.util.removeOwnNodes(document, '.stbib-quicksearch-intro');
-
-    originalAttributes.forEach((attributes, element) => {
-      attributes.forEach((value, name) => {
-        if (value == null) {
-          element.removeAttribute(name);
-        } else {
-          element.setAttribute(name, value);
-        }
-      });
-    });
-    originalAttributes.clear();
-
-    originalTexts.forEach((value, element) => {
-      element.textContent = value;
-    });
-    originalTexts.clear();
-
-    addedClasses.reverse().forEach(([element, className]) => element.classList.remove(className));
-    addedClasses.length = 0;
+    if (activePage) {
+      delete activePage.dataset[PAGE_FLAG];
+    }
+    undo?.restore();
+    undo = null;
     activePage = null;
     activeKind = null;
   }

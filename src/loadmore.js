@@ -4,7 +4,7 @@
  * Feature: „Mehr laden" statt Seitenblättern.
  *
  * Das Portal liefert fest 10 Treffer pro Seite; `PageSize` in der URL wird
- * ignoriert. 555 Treffer bedeuten also 56 Seitenaufrufe.
+ * ignoriert. 2026 Treffer bedeuten also 203 Seitenaufrufe.
  *
  * `Method=PageDown` gegen das Session-Handle der laufenden Suche liefert
  * jeweils die nächsten 10 Treffer und rückt den serverseitigen Cursor vor.
