@@ -15,10 +15,10 @@ var stbib = globalThis.stbib || (globalThis.stbib = {});
 stbib.query = (() => {
   const util = stbib.util;
 
+  const logic = stbib.logic;
+
   const QUERY_INPUT_SELECTOR = 'input#Query, input[name="q.Query"]';
   const HINT_CLASS = 'stbib-isbn-hint';
-  /** Bereits qualifizierte Suchen (au=, ti=, isbn=, …) nicht anfassen. */
-  const QUALIFIED_QUERY = /^[a-z][a-z0-9]{1,12}\s*=/i;
 
   /**
    * Die Listener hängen ab dem Laden dieser Datei – nicht erst in `mount()`.
@@ -34,92 +34,12 @@ stbib.query = (() => {
    */
   let featureEnabled = true;
 
-  function stripSeparators(value) {
-    return String(value || '').replace(/[\s-]/g, '');
-  }
-
-  function isbn10ChecksumOk(value) {
-    let sum = 0;
-    for (let i = 0; i < 9; i += 1) {
-      sum += (10 - i) * Number(value[i]);
-    }
-    const last = value[9].toUpperCase();
-    sum += last === 'X' ? 10 : Number(last);
-    return sum % 11 === 0;
-  }
-
-  function isbn13ChecksumOk(value) {
-    let sum = 0;
-    for (let i = 0; i < 13; i += 1) {
-      sum += Number(value[i]) * (i % 2 === 0 ? 1 : 3);
-    }
-    return sum % 10 === 0;
-  }
-
-  function isbn10To13(value) {
-    const core = `978${value.slice(0, 9)}`;
-    let sum = 0;
-    for (let i = 0; i < 12; i += 1) {
-      sum += Number(core[i]) * (i % 2 === 0 ? 1 : 3);
-    }
-    return `${core}${(10 - (sum % 10)) % 10}`;
-  }
-
-  function isbn13To10(value) {
-    if (!value.startsWith('978')) {
-      return null;
-    }
-    const core = value.slice(3, 12);
-    let sum = 0;
-    for (let i = 0; i < 9; i += 1) {
-      sum += (10 - i) * Number(core[i]);
-    }
-    const check = (11 - (sum % 11)) % 11;
-    return `${core}${check === 10 ? 'X' : check}`;
-  }
-
-  /**
-   * Erkennt eine ISBN und liefert alle Schreibweisen, unter denen der Katalog
-   * sie führen kann (ISBN-10 und ISBN-13). Sonst `null`.
-   * @returns {string[] | null}
-   */
-  function isbnVariants(rawQuery) {
-    const compact = stripSeparators(rawQuery);
-
-    if (/^\d{9}[\dX]$/i.test(compact) && isbn10ChecksumOk(compact)) {
-      return [isbn10To13(compact), compact.toUpperCase()];
-    }
-
-    if (/^97[89]\d{10}$/.test(compact) && isbn13ChecksumOk(compact)) {
-      const as10 = isbn13To10(compact);
-      return as10 ? [compact, as10] : [compact];
-    }
-
-    return null;
-  }
-
-  /**
-   * Baut aus einer Roheingabe die Katalog-Suchanfrage.
-   * @returns {string | null} umgeschriebene Anfrage oder `null`, wenn nichts zu tun ist
-   */
-  function rewrite(rawQuery) {
-    const trimmed = String(rawQuery || '').trim();
-    if (!trimmed || QUALIFIED_QUERY.test(trimmed)) {
-      return null;
-    }
-    const variants = isbnVariants(trimmed);
-    if (!variants) {
-      return null;
-    }
-    return variants.map((isbn) => `isbn=${isbn}`).join(' or ');
-  }
-
   /** Schreibt den Wert des Suchfelds um, bevor das Portal-JS `form.submit()` aufruft. */
   function rewriteInput(input) {
     if (!input) {
       return;
     }
-    const rewritten = rewrite(input.value);
+    const rewritten = logic.rewrite(input.value);
     if (rewritten) {
       input.value = rewritten;
     }
@@ -171,7 +91,7 @@ stbib.query = (() => {
       return;
     }
 
-    const rewritten = rewrite(currentQuery());
+    const rewritten = logic.rewrite(currentQuery());
     if (!rewritten) {
       return;
     }
@@ -239,7 +159,5 @@ stbib.query = (() => {
     storageKey: 'stbibSmartQuery',
     mount,
     unmount,
-    // für Tests
-    _internals: { rewrite, isbnVariants },
   };
 })();

@@ -12,7 +12,7 @@ export const EXTENSION_ROOT = path.resolve(__dirname, "..");
 
 export async function launch_with_extension(): Promise<BrowserContext> {
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "stbib-pw-"));
-  return chromium.launchPersistentContext(userDataDir, {
+  const context = await chromium.launchPersistentContext(userDataDir, {
     channel: "chromium",
     headless: false,
     args: [
@@ -20,4 +20,18 @@ export async function launch_with_extension(): Promise<BrowserContext> {
       `--load-extension=${EXTENSION_ROOT}`,
     ],
   });
+  // Profilordner mit dem Kontext entsorgen statt ihn in /tmp zu sammeln.
+  // Chrome gibt das Verzeichnis erst nach dem 'close'-Event ganz frei –
+  // daher asynchron mit Wiederholungen, Fehler sind unkritisch.
+  context.once("close", () => {
+    const attempt = (n: number): void => {
+      fs.rm(userDataDir, { recursive: true, force: true }, (error) => {
+        if (error && n < 5) {
+          setTimeout(() => attempt(n + 1), 500);
+        }
+      });
+    };
+    attempt(0);
+  });
+  return context;
 }

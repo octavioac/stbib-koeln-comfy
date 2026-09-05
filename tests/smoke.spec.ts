@@ -10,9 +10,17 @@ test.describe("Katalog mit Erweiterung", () => {
     const context = await launch_with_extension();
     const page = await context.newPage();
 
-    page.on("pageerror", (err) => {
-      throw new Error(`Seitenfehler: ${err.message}`);
-    });
+    /*
+     * Seitenfehler sammeln und gezielt auswerten: Das Portal selbst wirft
+     * gelegentlich Fehler (z. B. „$(...).dialog is not a function“) – die
+     * gehen uns nichts an. Failern sollen nur Fehler aus Erweiterungsdateien.
+     */
+    const pageErrors: Error[] = [];
+    page.on("pageerror", (err) => pageErrors.push(err));
+    const isExtensionError = (err: Error): boolean =>
+      new RegExp(
+        "stbib|content\\.js|src/(logic|util|facets|holdings|loadmore|query|account|pages)\\.js"
+      ).test(err.stack ?? err.message);
 
     await page.goto(`${CATALOG_ORIGIN}${QUICKSEARCH_PATH}`, {
       waitUntil: "domcontentloaded",
@@ -32,6 +40,10 @@ test.describe("Katalog mit Erweiterung", () => {
     await expect(page.locator("#BrowseList")).toBeVisible();
     await expect(page.locator("#SortCriteria").first()).toBeVisible();
 
+    expect(
+      pageErrors.filter(isExtensionError),
+      "keine Erweiterungsfehler auf der Seite"
+    ).toEqual([]);
     await context.close();
   });
 
@@ -44,14 +56,15 @@ test.describe("Katalog mit Erweiterung", () => {
       timeout: 60000,
     });
 
-    let catalogFrame = page.frames().find((f) => f.url().includes("APS_ZONES"));
-    for (let i = 0; i < 40 && !catalogFrame; i++) {
-      await page.waitForTimeout(500);
-      catalogFrame = page.frames().find((f) => f.url().includes("APS_ZONES"));
-    }
-    expect(catalogFrame, "IFrame mit APS_ZONES sollte geladen sein").toBeTruthy();
+    await expect
+      .poll(() => page.frames().some((f) => f.url().includes("APS_ZONES")), {
+        timeout: 30000,
+        message: "IFrame mit APS_ZONES sollte geladen sein",
+      })
+      .toBe(true);
+    const catalogFrame = page.frames().find((f) => f.url().includes("APS_ZONES"))!;
     await expect(
-      catalogFrame!.locator("h1.titleText1, h1").filter({ hasText: "Schnellsuche" })
+      catalogFrame.locator("h1.titleText1, h1").filter({ hasText: "Schnellsuche" })
     ).toBeVisible({
       timeout: 30000,
     });

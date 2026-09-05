@@ -219,7 +219,7 @@ stbib.facets = (() => {
   }
 
   function applyFacetMeasurements(measurements) {
-    for (const { header, tile, closed, width, offset } of measurements) {
+    for (const { tile, closed, width, offset } of measurements) {
       if (!tile) {
         continue;
       }

@@ -125,6 +125,9 @@ stbib.util = (() => {
    * ursprünglichen Zustand mit `restore()` wieder her. Jedes Modul, das
    * Portal-Knoten verändert, nutzt eine eigene Instanz; `restore()` leert die
    * Aufzeichnungen, danach darf die Instanz nicht mehr benutzt werden.
+   *
+   * Pro Element entweder `setText` oder `setChildren` – beides kombiniert
+   * würde die Original-Kinder beim `setText` verlieren.
    */
   function reverter() {
     /** element → Map(Attributname → ursprünglicher Wert oder `null` = fehlte) */
@@ -193,15 +196,17 @@ stbib.util = (() => {
       });
       placements.length = 0;
 
-      children.forEach((nodes, element) => {
-        element.replaceChildren(...nodes);
-      });
-      children.clear();
-
+      // Vor den Kindknoten: textContent-Zurücksetzung würde bereits
+      // wiederhergestellte Kinder wegwerfen.
       texts.forEach((value, element) => {
         element.textContent = value;
       });
       texts.clear();
+
+      children.forEach((nodes, element) => {
+        element.replaceChildren(...nodes);
+      });
+      children.clear();
 
       attributes.forEach((map, element) => {
         map.forEach((value, name) => {
@@ -221,41 +226,7 @@ stbib.util = (() => {
     return { setAttribute, setText, setChildren, addClass, moveBefore, restore };
   }
 
-  function normalizeSpace(value) {
-    return String(value || '').replace(/\s+/g, ' ').trim();
-  }
-
-  /**
-   * Zerlegt die Kindknoten eines Elements an `<br>`-Grenzen.
-   * Das Portal trennt mehrere Exemplare einer Zweigstelle genau so.
-   *
-   * Kommentarknoten werden verworfen: Die Bestandsblöcke enthalten erklärende
-   * HTML-Kommentare, deren `textContent` sonst im Ergebnis landen würde.
-   *
-   * @returns {Node[][]} Gruppen mit mindestens einem sichtbaren Zeichen
-   */
-  function splitAtBreaks(element) {
-    const groups = [];
-    let current = [];
-    for (const node of Array.from(element.childNodes)) {
-      if (node.nodeType === 8) {
-        continue;
-      }
-      if (node.nodeType === 1 && node.nodeName === 'BR') {
-        groups.push(current);
-        current = [];
-      } else {
-        current.push(node);
-      }
-    }
-    groups.push(current);
-    return groups.filter((group) => group.some((node) => normalizeSpace(node.textContent)));
-  }
-
-  function nodesToText(nodes) {
-    return normalizeSpace(nodes.map((node) => node.textContent || '').join(' '));
-  }
-
+  // Text-Helfer (normalisieren, an <br> zerlegen) leben in stbib.logic.
   const RECORD_ID_PATTERNS = [
     /fn=MakeReservation&(?:amp;)?q=(T\d+)/i,
     /[?&](?:amp;)?no=(T\d+)/i,
@@ -283,13 +254,13 @@ stbib.util = (() => {
     ensureViewport,
     fetchDocument,
     mapLimit,
-    nodesToText,
-    normalizeSpace,
+    nodesToText: stbib.logic.nodesToText,
+    normalizeSpace: stbib.logic.normalizeSpace,
     noticeUrl,
     qsa,
     recordId,
     reverter,
     removeOwnNodes,
-    splitAtBreaks,
+    splitAtBreaks: stbib.logic.splitAtBreaks,
   };
 })();

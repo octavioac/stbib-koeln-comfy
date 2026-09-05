@@ -6,11 +6,20 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
+    "test:unit": "vitest run",
+    "test:lint": "eslint . && stylelint \"styles/*.css\" \"popup/popup.css\"",
     "pack": "node scripts/pack-extension.mjs",
     "lint:webext": "web-ext lint -s . -i \"scripts/**\" -i \"tests/**\" -i \"playwright.config.ts\" -i \"package.json\" -i \"package-lock.json\""
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.49.0",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "jsdom": "^30.0.1",
+    "stylelint": "^17.15.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0",
     "web-ext": "^8.3.0"
   }
 }

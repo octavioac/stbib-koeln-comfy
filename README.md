@@ -97,6 +97,8 @@ Die Einstellungen liegen in `chrome.storage.local`. Änderungen greifen sofort a
 
 ### Chrome, Chromium, Edge und Brave
 
+Benötigt wird Chrome bzw. Chromium ab **105** (die Styles nutzen `:has()`).
+
 1. Die Erweiterungsseite öffnen, etwa `chrome://extensions`.
 2. **Entwicklermodus** aktivieren.
 3. **Entpackte Erweiterung laden** wählen.
@@ -126,6 +128,14 @@ npx playwright install chromium
 npm test
 ```
 
+Zusätzlich gibt es Offline-Prüfungen, die ohne den Katalog laufen:
+
+```bash
+npm run test:unit   # Vitest: ISBN-Logik, Bestands-Parser, Reverter, Manifest-/Storage-Verträge
+npm run test:lint   # ESLint + Stylelint
+npm run lint:webext # web-ext: Manifest- und Paketprüfung
+```
+
 Zusätzlich prüft der folgende Befehl das Manifest und die Erweiterungsdateien:
 
 ```bash
@@ -137,6 +147,8 @@ Die Tests laufen gegen den echten Katalog:
 - **`tests/selectors.spec.ts`** prüft den Serververtrag ohne Browser: Selektoren, Parameter und HTML-Strukturen, von denen die Erweiterung abhängt.
 - **`tests/features.spec.ts`** prüft Bestand, Nachladen, ISBN, Facetten, Konto, Schnellsuche und Vormerkung mit geladener Erweiterung.
 - **`tests/smoke.spec.ts`** deckt Schnellsuche, Trefferliste und den Einstieg unter `/Zones2/` ab.
+
+Die Unit-Tests in **`tests/unit/`** (Vitest) laufen dagegen offline: Die reine Logik (ISBN-Prüfsummen, Bestands-Parsing) lebt in `src/logic.js` und wird gegen Fixtures geprüft; Verträge zwischen `content.js`, Manifest und Popup sind als Paritätstests gesichert.
 
 Die Tests starten Chromium mit sichtbarem Fenster, weil Erweiterungen im Headless-Modus nicht zuverlässig unterstützt werden. Der externe Katalog antwortet bei vielen schnellen Aufrufen gelegentlich mit `503`; deshalb ist ein Wiederholungsversuch konfiguriert und zwischen Feature-Tests liegt eine kurze Pause.
 
@@ -164,15 +176,17 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 
 - `manifest.json` – MV3, Content-Scripts mit `all_frames: true`; Styles per `web_accessible_resources` nur bei „an“
 - `content.js` – Bootstrap: Styles einhängen, Theme setzen, Module anwenden, DOM beobachten
-- `src/util.js` – gemeinsame Helfer: DOM-Knoten, Viewport, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
+- `src/logic.js` – reine Logik ohne DOM: ISBN-Erkennung und Bestands-Parsing (auch für Node-Tests)
+- `src/util.js` – gemeinsame Helfer: DOM-Knoten, Viewport, Reverter für reversible Eingriffe, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
 - `src/facets.js` – Kachel- und Panel-Layout für Facetten, Suchfelder und entfernbare Filter-Chips
 - `src/holdings.js`, `src/loadmore.js`, `src/query.js` – Bestand, weitere Treffer und ISBN-Erkennung
 - `src/account.js` – Konto-Login mit reversiblen semantischen Ergänzungen
 - `src/pages.js` – Schnellsuche und Vormerkung mit reversiblen Seitenmarkern
 - `popup/` – Schalter im Toolbar-Popup
-- `styles/tokens.css` … `print.css` – aufeinander aufbauende Overrides; `styles/features.css` für die ergänzten Bausteine; `styles/theme-dark.css` für `data-stbib-theme="dark"` (wird zuletzt geladen)
+- `styles/tokens.css` – Design-Tokens; alle Farben der Komfort-Ansicht, dunkles Schema überschreibt nur Tokens (`theme-dark.css`)
+- `styles/base.css` … `components.css`, `results.css`, `pages.css`, `features.css`, `print.css` – aufeinander aufbauende Overrides; `pages.css` für Konto/Quicksearch/Vormerkung
 - `icons/` – Platzhalter-Icons (optional austauschen)
-- `tests/` – Playwright-Tests (siehe oben)
+- `tests/` – Playwright-Tests gegen den Live-Katalog (`*.spec.ts`) und Vitest-Unit-Tests offline (`unit/`)
 
 ### Wie die Module zusammenspielen
 

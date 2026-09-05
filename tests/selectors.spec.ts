@@ -51,8 +51,10 @@ test.describe("Portal-Vertrag: Trefferliste", () => {
     expect(html, "Trefferliste #BrowseList").toContain('id="BrowseList"');
     expect(html, "Trefferzahl „Ergebnisse (n)“").toMatch(/Ergebnisse\s*\(\s*\d+/);
 
-    // holdings.js liest die Titel-ID aus einer dieser Stellen.
+    // holdings.js liest die Titel-ID aus einer dieser Stellen (Fallbacks in
+    // dieser Reihenfolge; live greift MakeReservation, MakeNote als Reserve).
     expect(html, "Titel-ID (T…) in der Zeile").toMatch(/fn=MakeReservation&(?:amp;)?q=T\d+/);
+    expect(html, "Titel-ID-Fallback MakeNote('T…')").toMatch(/MakeNote\(\s*'(T\d+)'/);
 
     // loadmore.js braucht PageDown + die Seitenanzeige.
     expect(html, "PageDown-Link").toMatch(/Method=PageDown/);
@@ -67,7 +69,8 @@ test.describe("Portal-Vertrag: Trefferliste", () => {
     expect(html, "FacetBox").toContain('class="FacetBox"');
     expect(html, "FacetHeader").toMatch(/class="FacetHeader/);
     expect(html, "FacetsList").toMatch(/class="FacetsList/);
-    expect(html, "Facettenlinks").toContain('class="FacetLinkA"');
+    // Im Klassenattribut enthalten, nicht irgendwo im Dokument:
+    expect(html, "Facettenlinks").toMatch(/class="[^"]*\bFacetLinkA\b/);
 
     // facets.js verlässt sich darauf, dass „arrow_down“ = zugeklappt ist und
     // das Portal-JS per next() die Liste animiert.

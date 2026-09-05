@@ -2,6 +2,8 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
+  // Nur die Live-Specs; tests/unit/*.test.js gehören zu Vitest (npm run test:unit).
+  testMatch: "**/*.spec.ts",
   fullyParallel: false,
   workers: 1,
   timeout: 120000,

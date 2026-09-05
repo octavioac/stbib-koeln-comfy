@@ -15,6 +15,7 @@ var stbib = globalThis.stbib || (globalThis.stbib = {});
 
 stbib.holdings = (() => {
   const util = stbib.util;
+  const logic = stbib.logic;
 
   const ROOT_CLASS = 'stbib-holdings';
   const TOOLBAR_CLASS = 'stbib-toolbar';
@@ -40,9 +41,6 @@ stbib.holdings = (() => {
     })();
   }
 
-  const STATUS_AVAILABLE = /^verf(?:ü|ue)gbar/i;
-  const STATUS_ON_LOAN = /^entliehen/i;
-
   /** @type {Map<string, Promise<Branch[]>>} recordId → Bestand (dedupliziert parallele Abfragen) */
   const cache = new Map();
 
@@ -53,86 +51,13 @@ stbib.holdings = (() => {
    * @typedef {{code: string, name: string, items: Item[]}} Branch
    */
 
-  // ---------------------------------------------------------------- Parsing
-
-  /** `08/08/2026` → `08.08.2026` */
-  function formatDate(raw) {
-    const match = /(\d{2})\/(\d{2})\/(\d{4})/.exec(raw || '');
-    return match ? `${match[1]}.${match[2]}.${match[3]}` : '';
-  }
-
-  function classifyStatus(status) {
-    if (STATUS_AVAILABLE.test(status)) {
-      return 'available';
-    }
-    if (STATUS_ON_LOAN.test(status)) {
-      return 'onloan';
-    }
-    return 'other';
-  }
-
-  /**
-   * Ein Exemplar sieht im Portal so aus:
-   *   Freihand/Ausleihbereich <b>21.Pb Struwe</b> B50 831 860 5 <b>Entliehen</b>, voraussichtlich bis 08/08/2026
-   * Der letzte fette Text ist der Status, der erste die Signatur.
-   * @returns {Item | null}
-   */
-  function parseItem(nodes) {
-    const bolds = nodes.filter((node) => node.nodeType === 1 && node.nodeName === 'B');
-    if (!bolds.length) {
-      return null;
-    }
-
-    const statusNode = bolds[bolds.length - 1];
-    const status = util.normalizeSpace(statusNode.textContent);
-    if (!status) {
-      return null;
-    }
-
-    const signature = bolds.length > 1 ? util.normalizeSpace(bolds[0].textContent) : '';
-    const area = util.nodesToText(nodes.slice(0, nodes.indexOf(bolds[0])));
-    const tail = util.nodesToText(nodes.slice(nodes.indexOf(statusNode) + 1));
-
-    return {
-      area,
-      signature,
-      status,
-      kind: classifyStatus(status),
-      dueDate: formatDate(tail),
-    };
-  }
-
-  /** @returns {Branch[]} */
-  function parseHoldings(doc) {
-    const branches = [];
-    for (const header of doc.querySelectorAll('[id^="stock_header_"]')) {
-      const code = header.id.slice('stock_header_'.length);
-      if (!code) {
-        continue;
-      }
-      const content = doc.getElementById(`stock_content_${code}`);
-      const items = content
-        ? util.splitAtBreaks(content).map(parseItem).filter(Boolean)
-        : [];
-      if (!items.length) {
-        continue;
-      }
-      branches.push({
-        code,
-        name: util.normalizeSpace(header.textContent) || code,
-        items,
-      });
-    }
-    return branches;
-  }
-
   function load(recordId) {
     if (!cache.has(recordId)) {
       cache.set(
         recordId,
         util
           .fetchDocument(util.noticeUrl(recordId))
-          .then(parseHoldings)
+          .then(logic.parseHoldings)
           .catch((error) => {
             cache.delete(recordId);
             throw error;
@@ -142,78 +67,7 @@ stbib.holdings = (() => {
     return cache.get(recordId);
   }
 
-  // ------------------------------------------------------------- Auswertung
-
-  function countItems(branches) {
-    let total = 0;
-    let available = 0;
-    for (const branch of branches) {
-      for (const item of branch.items) {
-        total += 1;
-        if (item.kind === 'available') {
-          available += 1;
-        }
-      }
-    }
-    return { total, available };
-  }
-
-  function hasAvailable(branch) {
-    return branch.items.some((item) => item.kind === 'available');
-  }
-
-  /** Zweigstellen mit verfügbaren Exemplaren zuerst, Reihenfolge sonst wie im Katalog. */
-  function sortBranches(branches) {
-    const withCopies = branches.filter(hasAvailable);
-    const withoutCopies = branches.filter((branch) => !hasAvailable(branch));
-    return [...withCopies, ...withoutCopies];
-  }
-
-  /** Frühestes Rückgabedatum als `TT.MM.JJJJ` – für „alles entliehen". */
-  function earliestDueDate(branches) {
-    const dates = branches
-      .flatMap((branch) => branch.items)
-      .map((item) => item.dueDate)
-      .filter(Boolean)
-      .map((date) => {
-        const [day, month, year] = date.split('.');
-        return { date, sort: `${year}${month}${day}` };
-      })
-      .sort((a, b) => a.sort.localeCompare(b.sort));
-    return dates.length ? dates[0].date : '';
-  }
-
   // ---------------------------------------------------------------- Rendering
-
-  function renderSummary(branches) {
-    const { total, available } = countItems(branches);
-
-    if (!total) {
-      return {
-        kind: 'none',
-        text: '',
-        detail: 'Kein ausleihbarer Bestand hinterlegt – z. B. ein digitales Medium.',
-      };
-    }
-
-    if (available) {
-      const branchNames = sortBranches(branches).filter(hasAvailable).map((branch) => branch.name);
-      const shown = branchNames.slice(0, 3).join(', ');
-      const rest = branchNames.length > 3 ? ` +${branchNames.length - 3} weitere` : '';
-      return {
-        kind: 'available',
-        text: total === 1 ? 'Verfügbar' : `${available} von ${total} verfügbar`,
-        detail: `${shown}${rest}`,
-      };
-    }
-
-    const due = earliestDueDate(branches);
-    return {
-      kind: 'onloan',
-      text: total === 1 ? 'Entliehen' : `Alle ${total} Exemplare entliehen`,
-      detail: due ? `frühestens frei ab ${due}` : '',
-    };
-  }
 
   function renderItem(item, showSignature) {
     const parts = [];
@@ -276,7 +130,7 @@ stbib.holdings = (() => {
   }
 
   function renderInto(root, branches) {
-    const summary = renderSummary(branches);
+    const summary = logic.renderSummary(branches);
     const summaryNode = root.querySelector(`.${ROOT_CLASS}__summary`);
     const bodyNode = root.querySelector(`.${ROOT_CLASS}__body`);
 
@@ -294,7 +148,7 @@ stbib.holdings = (() => {
     }
 
     bodyNode.textContent = '';
-    for (const branch of sortBranches(branches)) {
+    for (const branch of logic.sortBranches(branches)) {
       bodyNode.appendChild(renderBranch(branch));
     }
 
@@ -487,7 +341,5 @@ stbib.holdings = (() => {
     storageKey: 'stbibHoldings',
     mount,
     unmount,
-    // für Tests
-    _internals: { parseHoldings, parseItem, renderSummary, formatDate },
   };
 })();

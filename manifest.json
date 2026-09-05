@@ -33,6 +33,7 @@
     {
       "matches": ["https://katalog.stbib-koeln.de/*"],
       "js": [
+        "src/logic.js",
         "src/util.js",
         "src/facets.js",
         "src/holdings.js",
