@@ -157,7 +157,9 @@ stbib.loadmore = (() => {
 
     try {
       const fetchedUrl = new URL(nextUrl, location.href).href;
-      const doc = await util.fetchDocument(fetchedUrl);
+      // Mit Wiederholung: Das Portal drosselt auf zwei gleichzeitige Abfragen,
+      // und das Auto-Laden des Bestands kann dieselbe Drossel belegen.
+      const doc = await util.fetchDocumentRetrying(fetchedUrl);
       const added = importRows(doc);
 
       if (added == null) {

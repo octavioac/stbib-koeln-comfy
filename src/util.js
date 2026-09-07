@@ -90,6 +90,41 @@ stbib.util = (() => {
     return new DOMParser().parseFromString(await response.text(), 'text/html');
   }
 
+  /**
+   * Vorübergehende Portal-Fehler, bei denen ein zweiter Versuch lohnt.
+   *
+   * `/alswww2.dll/` drosselt auf zwei gleichzeitige Abfragen. Darüber
+   * antwortet es entweder mit 503 (gemessen: vier gleichzeitige Abfragen,
+   * Antwort nach 70 ms – also die Drosselung, keine Last) oder es bricht den
+   * HTTP/2-Stream serverseitig ab; letzteres erreicht uns als `TypeError`
+   * („Failed to fetch" in Chrome, „NetworkError…" in Firefox).
+   *
+   * Ein `AbortError` ist eine DOMException, kein TypeError, und wird darum
+   * korrekt nicht wiederholt.
+   */
+  function isTransientFetchError(error) {
+    return error instanceof TypeError || /^HTTP 5\d\d$/.test(error?.message || '');
+  }
+
+  /**
+   * Wie `fetchDocument`, wiederholt aber gedrosselte Abfragen mit steigendem
+   * Abstand. Ohne das schlägt schon eine einzige fremde Abfrage im selben
+   * Moment – ein Seitenwechsel des Portals zählt mit – auf die Trefferzeile
+   * durch, obwohl ein Versuch 400 ms später zuverlässig durchgeht.
+   */
+  async function fetchDocumentRetrying(url, { retries = 2, backoffMs = 400, signal } = {}) {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await fetchDocument(url, { signal });
+      } catch (error) {
+        if (attempt >= retries || !isTransientFetchError(error)) {
+          throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, backoffMs * (attempt + 1)));
+      }
+    }
+  }
+
   /** Führt `worker` über alle `items` aus, aber nie mehr als `limit` gleichzeitig. */
   async function mapLimit(items, limit, worker) {
     const results = new Array(items.length);
@@ -258,6 +293,8 @@ stbib.util = (() => {
     el,
     ensureViewport,
     fetchDocument,
+    fetchDocumentRetrying,
+    isTransientFetchError,
     mapLimit,
     nodesToText: stbib.logic.nodesToText,
     normalizeSpace: stbib.logic.normalizeSpace,

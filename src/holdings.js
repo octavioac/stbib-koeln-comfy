@@ -21,8 +21,17 @@ stbib.holdings = (() => {
   const TOOLBAR_CLASS = 'stbib-toolbar';
   const ROW_FLAG = 'stbibHoldings';
   const DATA_CELL_SELECTOR = '[class*="SummaryDataCell"]';
-  const MAX_PARALLEL = 4;
-  /** Auto-Laden läuft gedrosselt: Das Portal antwortet auf Bursts mit 503. */
+  /**
+   * Das Portal drosselt `/alswww2.dll/` auf zwei gleichzeitige Abfragen –
+   * gemessen gegen den Live-Katalog: 1–2 gleichzeitig liefern zuverlässig 200,
+   * bei 3 bricht der Server einen HTTP/2-Stream ab (im Browser ein TypeError
+   * „Failed to fetch"), bei 4 antwortet er auf alle mit 503, und zwar nach
+   * 70 ms – es ist die Drosselung, nicht die Last. Sequenziell mit 300 ms
+   * Abstand gehen dagegen beliebig viele durch: Die Grenze liegt auf der
+   * Gleichzeitigkeit, nicht auf der Rate.
+   */
+  const MAX_PARALLEL = 2;
+  /** Zusätzlich die Startzeitpunkte entzerren – kostet nichts, glättet Bursts. */
   const AUTO_STAGGER_MS = 250;
 
   function delay(ms) {
@@ -33,12 +42,11 @@ stbib.holdings = (() => {
    * Auto-Laden: höchstens MAX_PARALLEL Abfragen gleichzeitig, deren Start um
    * AUTO_STAGGER_MS auseinandergezogen.
    *
-   * Beides ist nötig. Der Stagger allein genügt nicht: Nach „Mehr laden“
-   * enthält `roots` alle neuen Zeilen, und ohne Deckel wären das bei mehreren
-   * hundert Treffern ebenso viele offene Abfragen. Umgekehrt genügt der Deckel
-   * allein nicht, weil die ersten MAX_PARALLEL sonst gleichzeitig losgehen –
-   * genau solche Bursts beantwortet das Portal mit 503. Ab dem
-   * MAX_PARALLEL-ten Eintrag sorgt die Laufzeit der Vorgänger für den Abstand.
+   * Der Deckel ist das Entscheidende (siehe MAX_PARALLEL): Nach „Mehr laden“
+   * enthält `roots` alle neuen Zeilen, und ohne ihn wären das bei mehreren
+   * hundert Treffern ebenso viele offene Abfragen. Der Stagger entzerrt
+   * zusätzlich die ersten MAX_PARALLEL Starts; ab da sorgt die Laufzeit der
+   * Vorgänger ohnehin für Abstand.
    */
   function loadAllStaggered(roots) {
     void util.mapLimit(roots, MAX_PARALLEL, async (root, index) => {
@@ -64,7 +72,10 @@ stbib.holdings = (() => {
       cache.set(
         recordId,
         util
-          .fetchDocument(util.noticeUrl(recordId))
+          // Mit Wiederholung: Eine fremde Abfrage im selben Moment – ein
+          // Seitenwechsel des Portals zählt mit – würde die Zeile sonst rot
+          // färben, obwohl 400 ms später alles durchgeht.
+          .fetchDocumentRetrying(util.noticeUrl(recordId))
           .then(logic.parseHoldings)
           .catch((error) => {
             cache.delete(recordId);
