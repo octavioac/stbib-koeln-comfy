@@ -136,12 +136,6 @@ npm run test:lint   # ESLint + Stylelint
 npm run lint:webext # web-ext: Manifest- und Paketprüfung
 ```
 
-Zusätzlich prüft der folgende Befehl das Manifest und die Erweiterungsdateien:
-
-```bash
-npm run lint:webext
-```
-
 Die Tests laufen gegen den echten Katalog:
 
 - **`tests/selectors.spec.ts`** prüft den Serververtrag ohne Browser: Selektoren, Parameter und HTML-Strukturen, von denen die Erweiterung abhängt.

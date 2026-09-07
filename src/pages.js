@@ -7,10 +7,38 @@ stbib.pages = (() => {
   const FORM_DOCUMENT_CLASS = 'stbib-form-document';
   const QUICK_PAGE_CLASS = 'stbib-quicksearch-page';
   const RESERVATION_PAGE_CLASS = 'stbib-reservation-page';
-  const PAGE_FLAG = 'stbibPages';
   let undo = null;
   let activePage = null;
   let activeKind = null;
+
+  /**
+   * Die in diesem Durchlauf markierten Portal-Knoten *innerhalb* der Seite.
+   * Verschwindet einer davon aus dem Dokument, hat das Portal den Inhalt neu
+   * gerendert (etwa nach einem Validierungsfehler der Vormerkung) und die
+   * Marker müssen neu gesetzt werden.
+   *
+   * `#pageContent` selbst taugt dafür nicht: Dieser Knoten überlebt das
+   * Neu-Rendern, ein Flag daran würde den Neuaufbau nie bemerken.
+   */
+  let marked = [];
+
+  /** Merkt einen markierten Knoten und gibt ihn weiter (`undo.x(mark(el), …)`). */
+  function mark(element) {
+    if (element) {
+      marked.push(element);
+    }
+    return element;
+  }
+
+  /**
+   * Sind alle Marker noch da? Bei `false` laufen die Text-Scans erneut – sie
+   * sind zu teuer, um sie bei jedem Observer-Durchlauf zu wiederholen, aber
+   * nicht teuer genug, um einen kaputten Seitenzustand zu rechtfertigen.
+   * Ohne gefundene Marker (untypische Seitenvariante) wird immer neu gesucht.
+   */
+  function marksIntact() {
+    return marked.length > 0 && marked.every((element) => element.isConnected);
+  }
 
   function mountQuickSearch(page, form) {
     undo.addClass(document.documentElement, FORM_DOCUMENT_CLASS);
@@ -18,7 +46,7 @@ stbib.pages = (() => {
 
     const wrapper = form.querySelector('.wrapper');
     const label = wrapper?.querySelector('label[for="Query"]');
-    undo.setText(label, 'Suchbegriff');
+    undo.setText(mark(label), 'Suchbegriff');
 
     if (wrapper && !wrapper.querySelector('.stbib-quicksearch-intro')) {
       wrapper.prepend(
@@ -29,7 +57,7 @@ stbib.pages = (() => {
       );
     }
 
-    undo.setAttribute(form.querySelector('#Query'), 'autocomplete', 'off');
+    undo.setAttribute(mark(form.querySelector('#Query')), 'autocomplete', 'off');
   }
 
   function tableContaining(element, text) {
@@ -57,7 +85,7 @@ stbib.pages = (() => {
     const titleValue = Array.from(page.querySelectorAll('span.darkLink')).find((element) =>
       tableContaining(element, 'Titel')
     );
-    undo.addClass(tableContaining(titleValue, 'Notation'), 'stbib-reservation-meta');
+    undo.addClass(mark(tableContaining(titleValue, 'Notation')), 'stbib-reservation-meta');
 
     // Select gezielt über den umgebenden Kontext finden: Das erste <select>
     // der Seite muss nicht die Abholbibliothek sein.
@@ -65,18 +93,18 @@ stbib.pages = (() => {
     const pickup = pickupHint?.closest('table')?.querySelector('select') || null;
     if (pickup) {
       undo.addClass(
-        tableContaining(pickup, 'Bitte wählen Sie die Bibliothek'),
+        mark(tableContaining(pickup, 'Bitte wählen Sie die Bibliothek')),
         'stbib-reservation-pickup'
       );
-      undo.setAttribute(pickup, 'aria-label', 'Abholbibliothek');
+      undo.setAttribute(mark(pickup), 'aria-label', 'Abholbibliothek');
     }
 
     undo.addClass(
-      smallestTextContainer(page, 'Vormerkbare Exemplare'),
+      mark(smallestTextContainer(page, 'Vormerkbare Exemplare')),
       'stbib-reservation-status'
     );
     undo.addClass(
-      smallestTextContainer(page, 'Das Entgelt für die Vormerkung'),
+      mark(smallestTextContainer(page, 'Das Entgelt für die Vormerkung')),
       'stbib-reservation-fee'
     );
 
@@ -86,9 +114,9 @@ stbib.pages = (() => {
         control.tagName === 'INPUT' ? control.value : control.textContent
       );
       if (/^(Bestätigen|Senden)$/.test(label)) {
-        undo.addClass(control, 'stbib-reservation-confirm');
+        undo.addClass(mark(control), 'stbib-reservation-confirm');
       } else if (label === 'Abbrechen') {
-        undo.addClass(control, 'stbib-reservation-cancel');
+        undo.addClass(mark(control), 'stbib-reservation-cancel');
       }
     });
 
@@ -99,15 +127,15 @@ stbib.pages = (() => {
       while (actionRow && !actionRow.contains(cancel)) {
         actionRow = actionRow.parentElement?.closest('tr') || null;
       }
-      undo.addClass(actionRow, 'stbib-reservation-actions');
+      undo.addClass(mark(actionRow), 'stbib-reservation-actions');
     }
 
     const borrower = page.querySelector('#BRWR');
     const pin = page.querySelector('#PIN');
     if (borrower && pin) {
-      undo.addClass(tableContaining(pin, 'Bibliotheksausweises'), 'stbib-reservation-login');
-      undo.setAttribute(borrower, 'autocomplete', 'username');
-      undo.setAttribute(pin, 'autocomplete', 'current-password');
+      undo.addClass(mark(tableContaining(pin, 'Bibliotheksausweises')), 'stbib-reservation-login');
+      undo.setAttribute(mark(borrower), 'autocomplete', 'username');
+      undo.setAttribute(mark(pin), 'autocomplete', 'current-password');
     }
   }
 
@@ -133,29 +161,32 @@ stbib.pages = (() => {
 
     // Bereits bearbeitete Seiten nicht erneut durchsuchen – mount() läuft bei
     // jedem Observer-Durchlauf, und die Text-Scans sind die teuersten Aufrufe.
-    if (activePage === page && activeKind === kind && page.dataset[PAGE_FLAG] === kind) {
+    if (activePage === page && activeKind === kind && marksIntact()) {
       return;
     }
 
     undo = undo || stbib.util.reverter();
     activePage = page;
     activeKind = kind;
+    // Frischer Durchlauf: Die alten Marker hängen nach einem Neu-Rendern
+    // teils außerhalb des Dokuments und würden marksIntact() dauerhaft auf
+    // `false` halten. Der Reverter behält seine Aufzeichnungen dagegen –
+    // ein restore() vor dem Neu-Markieren würde die Seitenklassen kurz
+    // abnehmen und wieder setzen, also sichtbar flackern.
+    marked = [];
 
     if (kind === 'quick') {
       mountQuickSearch(page, quickForm);
     } else {
       mountReservation(page);
     }
-    page.dataset[PAGE_FLAG] = kind;
   }
 
   function unmount() {
     stbib.util.removeOwnNodes(document, '.stbib-quicksearch-intro');
-    if (activePage) {
-      delete activePage.dataset[PAGE_FLAG];
-    }
     undo?.restore();
     undo = null;
+    marked = [];
     activePage = null;
     activeKind = null;
   }

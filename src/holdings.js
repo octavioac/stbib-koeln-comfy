@@ -29,16 +29,24 @@ stbib.holdings = (() => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  /** Auto-Laden: Starte je Zeile eine Abfrage, versetzt um AUTO_STAGGER_MS. */
+  /**
+   * Auto-Laden: höchstens MAX_PARALLEL Abfragen gleichzeitig, deren Start um
+   * AUTO_STAGGER_MS auseinandergezogen.
+   *
+   * Beides ist nötig. Der Stagger allein genügt nicht: Nach „Mehr laden“
+   * enthält `roots` alle neuen Zeilen, und ohne Deckel wären das bei mehreren
+   * hundert Treffern ebenso viele offene Abfragen. Umgekehrt genügt der Deckel
+   * allein nicht, weil die ersten MAX_PARALLEL sonst gleichzeitig losgehen –
+   * genau solche Bursts beantwortet das Portal mit 503. Ab dem
+   * MAX_PARALLEL-ten Eintrag sorgt die Laufzeit der Vorgänger für den Abstand.
+   */
   function loadAllStaggered(roots) {
-    void (async () => {
-      for (const [index, root] of roots.entries()) {
-        if (index) {
-          await delay(AUTO_STAGGER_MS);
-        }
-        reveal(root, { expand: false });
+    void util.mapLimit(roots, MAX_PARALLEL, async (root, index) => {
+      if (index < MAX_PARALLEL) {
+        await delay(index * AUTO_STAGGER_MS);
       }
-    })();
+      await reveal(root, { expand: false });
+    });
   }
 
   /** @type {Map<string, Promise<Branch[]>>} recordId → Bestand (dedupliziert parallele Abfragen) */

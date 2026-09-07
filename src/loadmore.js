@@ -103,24 +103,21 @@ stbib.loadmore = (() => {
     let added = 0;
     for (const row of rows) {
       const imported = document.importNode(row, true);
-      // Vorsichtsmaßnahme: nichts Ausführbares aus geholtem Markup übernehmen.
-      stripExecutable(imported);
+      /*
+       * Vorsichtsmaßnahme: keine Skripte aus geholtem Markup übernehmen.
+       *
+       * Inline-Handler (`onclick="MakeNote('T…')"` & Co.) bleiben bewusst
+       * stehen: Das Portal bindet die Zeilenaktionen genau so, und die
+       * Antwort kommt von derselben Herkunft und Sitzung wie die erste
+       * Seite. Sie zu entfernen würde nachgeladene Zeilen anders behandeln
+       * als die schon vorhandenen – die Aktionen wären dort tot, und
+       * `util.recordId()` verlöre seinen MakeNote-Fallback.
+       */
+      imported.querySelectorAll('script').forEach((node) => node.remove());
       target.appendChild(imported);
       added += 1;
     }
     return added;
-  }
-
-  /** Entfernt `<script>`-Knoten und Inline-Handler (`onclick` & Co.). */
-  function stripExecutable(root) {
-    root.querySelectorAll('script').forEach((node) => node.remove());
-    for (const node of root.querySelectorAll('*')) {
-      for (const attr of Array.from(node.attributes)) {
-        if (/^on/i.test(attr.name)) {
-          node.removeAttribute(attr.name);
-        }
-      }
-    }
   }
 
   function updateBar() {
@@ -230,6 +227,9 @@ stbib.loadmore = (() => {
       nextUrl = pageDownUrl(document);
       exhausted = !nextUrl;
       baseOffset = (currentPage() - 1) * 10;
+      // Die Fehlermeldung gehört zur alten Liste – sonst startet die neue
+      // Suche mit „Laden fehlgeschlagen“ statt mit der Trefferzahl.
+      statusError = '';
       initialisedFor = table;
     }
 

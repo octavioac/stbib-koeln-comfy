@@ -29,8 +29,8 @@ stbib.facets = (() => {
   const WRAPPED_FLAG = 'stbibFacetWrapped';
   const FILTERED_FLAG = 'stbibFacetFiltered';
   const ACTIVE_FILTER_CLASS = 'stbib-active-filter';
-  /** Bereits umgebaute Filter-`<b>`-Knoten → ihr RemoveClause-Link. */
-  const activeFilters = new Map();
+  /** Bereits umgebaute Filter-`<b>`-Knoten – reine Wiedervorlage-Sperre. */
+  const activeFilters = new Set();
   /** Einträge offen und positioniert (Header-Knoten), für Resize & Cleanup. */
   const facetHeaderHandlers = new Map();
   let filterUndo = null;
@@ -168,7 +168,7 @@ stbib.facets = (() => {
         continue;
       }
 
-      activeFilters.set(filter, link);
+      activeFilters.add(filter);
       filterUndo = filterUndo || util.reverter();
       filterUndo.setChildren(
         filter,
@@ -176,16 +176,13 @@ stbib.facets = (() => {
         link
       );
       filterUndo.addClass(filter, ACTIVE_FILTER_CLASS);
-      link.classList.add(`${ACTIVE_FILTER_CLASS}__remove`);
+      filterUndo.addClass(link, `${ACTIVE_FILTER_CLASS}__remove`);
       filterUndo.setAttribute(link, 'aria-label', `Filter ${label} entfernen`);
       filterUndo.setAttribute(link, 'title', `Filter ${label} entfernen`);
     }
   }
 
   function unmountActiveFilters() {
-    for (const link of activeFilters.values()) {
-      link.classList.remove(`${ACTIVE_FILTER_CLASS}__remove`);
-    }
     activeFilters.clear();
     filterUndo?.restore();
     filterUndo = null;

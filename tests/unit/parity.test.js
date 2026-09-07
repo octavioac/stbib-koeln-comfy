@@ -56,6 +56,30 @@ describe("Manifest-Verträge", () => {
     }
   });
 
+  it("lädt src/logic.js vor src/util.js", () => {
+    /*
+     * `util.js` liest `stbib.logic.nodesToText` & Co. beim Auswerten seines
+     * IIFE – nicht erst beim Aufruf. Steht logic.js im Manifest dahinter, ist
+     * `stbib.logic` noch undefined, util.js wirft beim Laden, und damit fällt
+     * die komplette Erweiterung aus. Klassische Content-Scripts haben keine
+     * Imports, die das erzwingen könnten; also prüft es der Test.
+     */
+    const scripts = manifest.content_scripts[0].js;
+    expect(scripts).toContain("src/logic.js");
+    expect(scripts.indexOf("src/logic.js")).toBeLessThan(scripts.indexOf("src/util.js"));
+  });
+
+  it("lädt src/util.js vor allen Modulen, die es beim Laden auslesen", () => {
+    // holdings.js/query.js greifen im IIFE auf stbib.util und stbib.logic zu.
+    const scripts = manifest.content_scripts[0].js;
+    const utilAt = scripts.indexOf("src/util.js");
+    for (const module of ["src/holdings.js", "src/query.js", "src/facets.js"]) {
+      expect(scripts.indexOf(module), module).toBeGreaterThan(utilAt);
+    }
+    // content.js bindet alle Module ein und muss zuletzt kommen.
+    expect(scripts[scripts.length - 1]).toBe("content.js");
+  });
+
   it("style/theme-Dateien sind nicht doppelt gelistet", () => {
     const resources = manifest.web_accessible_resources[0].resources;
     expect(new Set(resources).size).toBe(resources.length);

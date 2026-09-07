@@ -127,7 +127,12 @@ stbib.util = (() => {
    * Aufzeichnungen, danach darf die Instanz nicht mehr benutzt werden.
    *
    * Pro Element entweder `setText` oder `setChildren` – beides kombiniert
-   * würde die Original-Kinder beim `setText` verlieren.
+   * würde die Original-Kinder beim `setText` verlieren. Dasselbe gilt über
+   * Elementgrenzen hinweg: Ein `setText` auf einem Vorfahren wirft beim
+   * Wiederherstellen den Teilbaum weg, in dem ein `setChildren`-Element
+   * hängt – dessen Kinder landen dann in einem abgehängten Knoten. Die
+   * Reihenfolge in `restore()` kann das nicht auffangen; verschachtelte
+   * Eingriffe gehören auf dieselbe Ebene.
    */
   function reverter() {
     /** element → Map(Attributname → ursprünglicher Wert oder `null` = fehlte) */
