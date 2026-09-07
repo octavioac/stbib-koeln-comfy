@@ -1,7 +1,7 @@
 {
   "name": "stbib-katalog-modern",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Chrome-Erweiterung: Katalog Stadtbibliothek Köln komfortabler",
   "scripts": {
     "test": "playwright test",
