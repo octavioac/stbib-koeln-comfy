@@ -3,8 +3,7 @@
 Alle Texte zum Kopieren für das Developer Dashboard. Zielgruppe: Nutzerinnen und Nutzer
 der Stadtbibliothek Köln, die sich mit der Bibliothek auskennen, aber nicht technisch sind.
 
-Platzhalter in eckigen Klammern (z. B. `[deine E-Mail-Adresse]`) bitte vor dem Einreichen
-ausfüllen – die habe ich bewusst nicht erfunden.
+Kontakt und Datenschutz-URL sind ausgefüllt (ai@octavio.wtf, GitHub-Issues, PRIVACY.md).
 
 ---
 
@@ -106,8 +105,8 @@ WICHTIGER HINWEIS
 Wie gesagt: ein privates, unabhängiges Projekt ohne Verbindung zur Stadtbibliothek
 Köln. Weil ich den Katalog selbst jede Woche benutze, halte ich die Erweiterung auch
 aktuell. Ändert sich am Katalog etwas und irgendwas funktioniert nicht mehr richtig,
-freue ich mich über eine Rückmeldung: [deine Kontaktmöglichkeit, z. B. E-Mail oder
-GitHub-Issues-Link]
+freue ich mich über eine Rückmeldung: ai@octavio.wtf oder als Issue auf GitHub
+(https://github.com/octavioac/stbib-koeln-comfy/issues)
 ```
 
 ---
@@ -161,8 +160,7 @@ Browser ohnehin beim normalen Bedienen des Katalogs aufruft.
 ```
 
 Falls das Dashboard zusätzlich eine **gehostete Datenschutzerklärung (URL)** verlangt:
-Den obigen Text z. B. als `PRIVACY.md` ins GitHub-Repository legen und den Link zur
-GitHub-Seite der Datei im entsprechenden Feld eintragen.
+`PRIVACY.md` liegt im Repository, Link: https://github.com/octavioac/stbib-koeln-comfy/blob/main/PRIVACY.md
 
 ---
 
@@ -179,16 +177,15 @@ GitHub-Seite der Datei im entsprechenden Feld eintragen.
 Trag hier deine bevorzugte Kontaktmöglichkeit ein, z. B.:
 
 ```
-Fragen, Fehler oder Feedback bitte über [deine E-Mail-Adresse] oder als Issue im
-GitHub-Repository: [Link zum Repository, falls öffentlich]
+Fragen, Fehler oder Feedback bitte an ai@octavio.wtf oder als Issue im
+GitHub-Repository: https://github.com/octavioac/stbib-koeln-comfy/issues
 ```
 
 ---
 
 ## Offene Punkte vor dem Einreichen
 
-- [ ] Platzhalter oben ausfüllen (Kontakt, ggf. Datenschutz-URL)
-- [ ] Mindestens 1 Screenshot hochladen (1280×800 oder 640×400 px) – ich kann dir bei
-      Bedarf welche vom laufenden Katalog erstellen
+- [x] Kontakt eingetragen (ai@octavio.wtf + GitHub Issues)
+- [x] Mindestens 1 Screenshot hochgeladen (Store-Eintrag ist live, bitte Sichtprüfung im Dashboard)
 - [x] Icon-Set ersetzt (16/32/48/128 px, transparente Ecken, 16px als vereinfachte
       Silhouette ohne Fensterdetails für Lesbarkeit in der Werkzeugleiste)

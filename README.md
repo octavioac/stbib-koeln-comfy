@@ -95,7 +95,13 @@ Die Einstellungen liegen in `chrome.storage.local`. Änderungen greifen sofort a
 
 ## Installation
 
-### Chrome, Chromium, Edge und Brave
+### Aus dem Chrome Web Store (empfohlen)
+
+Einfach über den [Chrome Web Store](https://chromewebstore.google.com/detail/stbib-köln-komfort-ansich/nahjbdlojemijnihbdknobfjjdigcphn) installieren: ein Klick, kein Entwicklermodus nötig.
+
+### Für Entwicklung (entpackt laden)
+
+#### Chrome, Chromium, Edge und Brave
 
 Benötigt wird Chrome bzw. Chromium ab **105** (die Styles nutzen `:has()`).
 
@@ -179,7 +185,7 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 - `popup/` – Schalter im Toolbar-Popup
 - `styles/tokens.css` – Design-Tokens; alle Farben der Komfort-Ansicht, dunkles Schema überschreibt nur Tokens (`theme-dark.css`)
 - `styles/base.css` … `components.css`, `results.css`, `pages.css`, `features.css`, `print.css` – aufeinander aufbauende Overrides; `pages.css` für Konto/Quicksearch/Vormerkung
-- `icons/` – Platzhalter-Icons (optional austauschen)
+- `icons/` – fertige Icons (16/32/48/128 px)
 - `tests/` – Playwright-Tests gegen den Live-Katalog (`*.spec.ts`) und Vitest-Unit-Tests offline (`unit/`)
 
 ### Wie die Module zusammenspielen
@@ -190,4 +196,12 @@ Ein **MutationObserver** hält das synchron, denn Teile der Seite kommen erst na
 
 ## Drittanbieter
 
-Der Katalog selbst wird von der **Stadtbibliothek Köln** betrieben (Software: MondoIn Zones). Diese Erweiterung ist **kein** offizielles Angebot der Bibliothek. Sie sendet keine Daten an Dritte; alle Abfragen gehen ausschließlich an `katalog.stbib-koeln.de` – dieselbe Adresse, die der Browser beim normalen Blättern im Katalog aufruft.
+Der Katalog selbst wird von der **Stadtbibliothek Köln** betrieben (Software: MondoIn Zones). Diese Erweiterung ist **kein** offizielles Angebot der Bibliothek. Sie sendet keine Daten an Dritte; alle Abfragen gehen ausschließlich an `katalog.stbib-koeln.de` – dieselbe Adresse, die der Browser beim normalen Blättern im Katalog aufruft. Details stehen in [`PRIVACY.md`](PRIVACY.md).
+
+## Feedback
+
+Fehler oder Vorschläge bitte als [Issue auf GitHub](https://github.com/octavioac/stbib-koeln-comfy/issues) oder per Mail an ai@octavio.wtf.
+
+## Lizenz
+
+MIT – siehe [`LICENSE`](LICENSE).
