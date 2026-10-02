@@ -1,4 +1,4 @@
-# Stadtbibliothek Köln – Katalog komfortabler
+# Stadtbibliothek Köln: Katalog komfortabler
 
 Ungepackte **Browser-Erweiterung (Manifest V3)** für den [Katalog der Stadtbibliothek Köln](https://katalog.stbib-koeln.de/). Sie verbessert ausschließlich die Darstellung und Interaktion im Browser. Der Katalog, das Benutzerkonto und die Daten der Bibliothek bleiben unverändert.
 
@@ -22,9 +22,9 @@ Die Oberfläche des Katalogs ist funktional, wirkt bei Suche, Filtern und Formul
 
 ### Bestand in der Trefferliste
 
-Die Trefferliste des Portals zeigt nur Titel, Verfasser, Signatur, Jahr, Auflage, Sprache und Verlag – **nicht**, ob und wo ein Titel ausleihbar ist. Bisher musste man jeden Treffer einzeln öffnen, den Bestand prüfen und wieder zurücknavigieren.
+Die Trefferliste des Portals zeigt nur Titel, Verfasser, Signatur, Jahr, Auflage, Sprache und Verlag, aber **nicht**, ob und wo ein Titel ausleihbar ist. Bisher musste man jeden Treffer einzeln öffnen, den Bestand prüfen und wieder zurücknavigieren.
 
-Jede Trefferzeile bekommt darum eine Schaltfläche **„Bestand anzeigen“** (oder **„Bestand für alle Treffer laden“** über der Liste). Nach dem Laden – auch ohne Aufklappen – erscheint direkt in der Zeile ein **Status-Badge**:
+Jede Trefferzeile bekommt darum eine Schaltfläche **„Bestand anzeigen“** (oder **„Bestand für alle Treffer laden“** über der Liste). Nach dem Laden erscheint direkt (auch ohne Aufklappen) in der Zeile ein **Status-Badge**:
 
 | Badge | Bedeutung |
 |---|---|
@@ -34,33 +34,33 @@ Jede Trefferzeile bekommt darum eine Schaltfläche **„Bestand anzeigen“** (o
 
 Ein zweiter Klick auf **„Bestand je Zweigstelle“** klappt die Details auf: je Zweigstelle Signatur und Status der einzelnen Exemplare. Zweigstellen mit verfügbaren Exemplaren stehen oben.
 
-Mit **„Bestand automatisch laden“** im Popup lädt die Erweiterung alle Treffer der Seite sofort im Hintergrund – praktisch am Schreibtisch, im Mobilfunknetz eher aus (jeder Bestand ist eine zusätzliche Abfrage an den Katalog).
+Mit **„Bestand automatisch laden“** im Popup lädt die Erweiterung alle Treffer der Seite sofort im Hintergrund. Das ist praktisch am Schreibtisch, im Mobilfunknetz aber besser ausgeschaltet, weil jeder Bestand eine zusätzliche Abfrage an den Katalog ist.
 
-Technisch: Der **Permalink** eines Titels (`APS_ZONES?fn=ViewNotice&q=<ID>`) liefert den Bestand aller Zweigstellen bereits im HTML – ohne Session, gleiche Origin. `src/holdings.js` holt ihn per `fetch` (höchstens 4 parallel) und liest die Blöcke `stock_header_<code>` / `stock_content_<code>` aus.
+Technisch: Der **Permalink** eines Titels (`APS_ZONES?fn=ViewNotice&q=<ID>`) liefert den Bestand aller Zweigstellen bereits im HTML, ohne Session und von derselben Origin. `src/holdings.js` holt ihn per `fetch` (höchstens 4 parallel) und liest die Blöcke `stock_header_<code>` / `stock_content_<code>` aus.
 
 ### ISBN-Suche
 
-Eine blank eingegebene ISBN findet im Katalog **nichts** – weder `9783551557414` noch `978-3-551-55741-4`. Erst der Index-Präfix `isbn=` (klein geschrieben; `ISBN=` wird als Wort behandelt) führt zum Titel.
+Eine blank eingegebene ISBN findet im Katalog **nichts**, weder `9783551557414` noch `978-3-551-55741-4`. Erst der Index-Präfix `isbn=` (klein geschrieben; `ISBN=` wird als Wort behandelt) führt zum Titel.
 
-`src/query.js` erkennt ISBN-10 und ISBN-13 inklusive Prüfsumme und schreibt die Eingabe vor dem Absenden um – in **beide** Schreibweisen, damit auch Titel gefunden werden, die nur mit der jeweils anderen ISBN erfasst sind:
+`src/query.js` erkennt ISBN-10 und ISBN-13 inklusive Prüfsumme und schreibt die Eingabe vor dem Absenden um, und zwar in **beide** Schreibweisen, damit auch Titel gefunden werden, die nur mit der jeweils anderen ISBN erfasst sind:
 
 ```
 978-3-551-55741-4   →   isbn=9783551557414 or isbn=3551557411
 ```
 
-Bereits qualifizierte Anfragen (`au=`, `ti=`, `isbn=` …) bleiben unangetastet, ebenso Zahlen, die keine gültige ISBN sind. Landet man trotzdem auf einer Nulltrefferseite – etwa über ein Lesezeichen oder die erweiterte Suche – erscheint dort ein Hinweis mit dem Link **„Als ISBN suchen“**.
+Bereits qualifizierte Anfragen (`au=`, `ti=`, `isbn=` …) bleiben unangetastet, ebenso Zahlen, die keine gültige ISBN sind. Landet man trotzdem auf einer Nulltrefferseite (etwa über ein Lesezeichen oder die erweiterte Suche), erscheint dort ein Hinweis mit dem Link **„Als ISBN suchen“**.
 
 ### „Mehr laden“ statt Blättern
 
 Das Portal liefert fest **10 Treffer pro Seite**; ein `PageSize` in der URL wird ignoriert. 2026 Treffer bedeuten 203 Seitenaufrufe.
 
-Unter der Trefferliste steht darum **„Weitere 10 Treffer laden“** samt Zähler („Treffer 1–20 von 2026“). `src/loadmore.js` ruft `Method=PageDown` gegen das Session-Handle der laufenden Suche auf und hängt die Zeilen an die Liste an. Weil dieser Aufruf den serverseitigen Cursor vorrückt, wird die Seitenanzeige des Portals mitgeschrieben – dessen eigene Blätter-Links bleiben damit stimmig und benutzbar.
+Unter der Trefferliste steht darum **„Weitere 10 Treffer laden“** samt Zähler („Treffer 1–20 von 2026“). `src/loadmore.js` ruft `Method=PageDown` gegen das Session-Handle der laufenden Suche auf und hängt die Zeilen an die Liste an. Weil dieser Aufruf den serverseitigen Cursor vorrückt, wird die Seitenanzeige des Portals mitgeschrieben. Dessen eigene Blätter-Links bleiben damit stimmig und benutzbar.
 
 ### Facetten
 
 Die Facetten („Einschränken der Suche“) liegen als Kacheln in einem Raster **über** der Trefferliste:
 
-- **Filterfeld** in jeder Facette mit mindestens 10 Werten – bei bis zu 50 Autoren oder Verlagen ist Tippen schneller als Scrollen.
+- **Filterfeld** in jeder Facette mit mindestens 10 Werten. Bei bis zu 50 Autoren oder Verlagen ist Tippen schneller als Scrollen.
 - Eine geöffnete Facette erscheint als ausreichend breites Panel über dem Inhalt. Die Trefferliste springt beim Öffnen und Schließen nicht.
 - Aktive Filter erscheinen neben der Suchanfrage als Chip mit einer klar beschrifteten `×`-Schaltfläche zum Entfernen.
 
@@ -72,7 +72,7 @@ Unabhängig von den Funktionen oben modernisiert die Komfort-Ansicht die Darstel
 - kompakte Trefferbreite: Medienbild, Titel und Aktionen bleiben auch auf großen Bildschirmen gut zusammen lesbar
 - responsive Schnellsuche mit sichtbarem Label und eindeutiger Primäraktion
 - überarbeitete Seiten für **Mein Konto** und **Vormerken**: klare Eingabefelder, verständliche Hinweise und mobil nutzbare Aktionen
-- optionales dunkles Farbschema – greift nur bei aktivierter Komfort-Ansicht
+- optionales dunkles Farbschema, greift nur bei aktivierter Komfort-Ansicht
 
 Bei ausgeschalteter Komfort-Ansicht werden alle injizierten Styles und Ergänzungen entfernt. Der Katalog steht wieder im Original da.
 
@@ -173,24 +173,24 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 | 9 | **Desktop** ca. 1280px und **schmal** ca. 390px: keine horizontale Scrollleiste, bedienbare Aktionen |
 | 10 | **Mein Konto**: Felder, PIN-Hinweise, „Geheimnummer vergessen?“ und beide Aktionen prüfen |
 | 11 | **Vormerken**: Medienangaben, Abholbibliothek, Hinweis zum Entgelt und Bestätigen/Abbrechen prüfen |
-| 12 | **Mobile vs. klassisch**: Footer-Link zur mobilen Ansicht bzw. zurück – Layout brauchbar |
-| 13 | Optional: **Drucken der Liste** – Inhalt sichtbar, geladener Bestand wird mitgedruckt |
+| 12 | **Mobile vs. klassisch**: Footer-Link zur mobilen Ansicht bzw. zurück, Layout brauchbar |
+| 13 | Optional: **Drucken der Liste**: Inhalt sichtbar, geladener Bestand wird mitgedruckt |
 
 ## Projektstruktur
 
-- `manifest.json` – MV3, Content-Scripts mit `all_frames: true`; Styles per `web_accessible_resources` nur bei „an“
-- `content.js` – Bootstrap: Styles einhängen, Theme setzen, Module anwenden, DOM beobachten
-- `src/logic.js` – reine Logik ohne DOM: ISBN-Erkennung, Such-URLs fürs Popup und Bestands-Parsing (auch für Node-Tests)
-- `src/util.js` – gemeinsame Helfer: DOM-Knoten, Viewport, Reverter für reversible Eingriffe, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
-- `src/facets.js` – Kachel- und Panel-Layout für Facetten, Suchfelder und entfernbare Filter-Chips
-- `src/holdings.js`, `src/loadmore.js`, `src/query.js` – Bestand, weitere Treffer und ISBN-Erkennung
-- `src/account.js` – Konto-Login mit reversiblen semantischen Ergänzungen
-- `src/pages.js` – Schnellsuche und Vormerkung mit reversiblen Seitenmarkern
-- `popup/` – Katalogsuche und Schalter im Toolbar-Popup
-- `styles/tokens.css` – Design-Tokens; alle Farben der Komfort-Ansicht, dunkles Schema überschreibt nur Tokens (`theme-dark.css`)
-- `styles/base.css` … `components.css`, `results.css`, `pages.css`, `features.css`, `print.css` – aufeinander aufbauende Overrides; `pages.css` für Konto/Quicksearch/Vormerkung
-- `icons/` – fertige Icons (16/32/48/128 px)
-- `tests/` – Playwright-Tests gegen den Live-Katalog (`*.spec.ts`) und Vitest-Unit-Tests offline (`unit/`)
+- `manifest.json`: MV3, Content-Scripts mit `all_frames: true`; Styles per `web_accessible_resources` nur bei „an“
+- `content.js`: Bootstrap: Styles einhängen, Theme setzen, Module anwenden, DOM beobachten
+- `src/logic.js`: reine Logik ohne DOM: ISBN-Erkennung, Such-URLs fürs Popup und Bestands-Parsing (auch für Node-Tests)
+- `src/util.js`: gemeinsame Helfer: DOM-Knoten, Viewport, Reverter für reversible Eingriffe, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
+- `src/facets.js`: Kachel- und Panel-Layout für Facetten, Suchfelder und entfernbare Filter-Chips
+- `src/holdings.js`, `src/loadmore.js`, `src/query.js`: Bestand, weitere Treffer und ISBN-Erkennung
+- `src/account.js`: Konto-Login mit reversiblen semantischen Ergänzungen
+- `src/pages.js`: Schnellsuche und Vormerkung mit reversiblen Seitenmarkern
+- `popup/`: Katalogsuche und Schalter im Toolbar-Popup
+- `styles/tokens.css`: Design-Tokens; alle Farben der Komfort-Ansicht, dunkles Schema überschreibt nur Tokens (`theme-dark.css`)
+- `styles/base.css` … `components.css`, `results.css`, `pages.css`, `features.css`, `print.css`: aufeinander aufbauende Overrides; `pages.css` für Konto/Quicksearch/Vormerkung
+- `icons/`: fertige Icons (16/32/48/128 px)
+- `tests/`: Playwright-Tests gegen den Live-Katalog (`*.spec.ts`) und Vitest-Unit-Tests offline (`unit/`)
 
 ### Wie die Module zusammenspielen
 
@@ -200,7 +200,7 @@ Ein **MutationObserver** hält das synchron, denn Teile der Seite kommen erst na
 
 ## Drittanbieter
 
-Der Katalog selbst wird von der **Stadtbibliothek Köln** betrieben (Software: MondoIn Zones). Diese Erweiterung ist **kein** offizielles Angebot der Bibliothek. Sie sendet keine Daten an Dritte; alle Abfragen gehen ausschließlich an `katalog.stbib-koeln.de` – dieselbe Adresse, die der Browser beim normalen Blättern im Katalog aufruft. Details stehen in [`PRIVACY.md`](PRIVACY.md).
+Der Katalog selbst wird von der **Stadtbibliothek Köln** betrieben (Software: MondoIn Zones). Diese Erweiterung ist **kein** offizielles Angebot der Bibliothek. Sie sendet keine Daten an Dritte; alle Abfragen gehen ausschließlich an `katalog.stbib-koeln.de`, also an dieselbe Adresse, die der Browser beim normalen Blättern im Katalog aufruft. Details stehen in [`PRIVACY.md`](PRIVACY.md).
 
 ## Feedback
 
@@ -208,4 +208,4 @@ Fehler oder Vorschläge bitte als [Issue auf GitHub](https://github.com/octavioa
 
 ## Lizenz
 
-MIT – siehe [`LICENSE`](LICENSE).
+MIT, siehe [`LICENSE`](LICENSE).

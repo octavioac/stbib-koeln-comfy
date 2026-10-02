@@ -15,16 +15,16 @@ Bereits in `manifest.json` gesetzt (Store übernimmt ihn automatisch):
 Stbib Köln Komfort-Ansicht (inoffiziell)
 ```
 
-Chrome/Firefox erlauben im `name`-Feld maximal **45 Zeichen** – das hat die ursprünglich
+Chrome/Firefox erlauben im `name`-Feld maximal **45 Zeichen**. Das hat die ursprünglich
 längere Fassung („Komfort-Ansicht für die Stadtbibliothek Köln (inoffiziell)“, 58
 Zeichen) überschritten und wurde deshalb gekürzt.
 
-**Alternativen** (alle ≤ 45 Zeichen), falls dir eine Variante besser gefällt – einfach
+**Alternativen** (alle ≤ 45 Zeichen), falls dir eine Variante besser gefällt, einfach
 im Feld „Name“ im Dashboard eintragen, das überschreibt den manifest-Namen nur für den
 Store-Eintrag, nicht die Erweiterung selbst:
 
 - `Komfort-Katalog Stbib Köln (inoffiziell)` (40 Zeichen)
-- `Stbib Köln – Komfort-Katalog (inoffiziell)` (42 Zeichen)
+- `Stbib Köln: Komfort-Katalog (inoffiziell)` (41 Zeichen)
 
 Alle Varianten sagen unmissverständlich: für die Kölner Stadtbibliothek gemacht, aber
 kein offizielles Angebot der Bibliothek.
@@ -40,7 +40,7 @@ Macht den Online-Katalog der Stadtbibliothek Köln übersichtlicher: Bestand sic
 ```
 
 Diese Fassung nennt zuerst den **Gesamtnutzen** („macht übersichtlicher“) und erst danach
-Beispiele – nicht nur das zuletzt gebaute Feature.
+Beispiele, nicht nur das zuletzt gebaute Feature.
 
 ---
 
@@ -49,15 +49,15 @@ Beispiele – nicht nur das zuletzt gebaute Feature.
 Direkt so ins Dashboard einfügen (reiner Text, keine Formatierung nötig):
 
 ```
-Ich leihe selbst regelmäßig bei der Stadtbibliothek Köln aus – Angebot und Service
+Ich leihe selbst regelmäßig bei der Stadtbibliothek Köln aus. Angebot und Service
 überzeugen mich total. Der Online-Katalog dagegen hat mich immer wieder genervt:
 winzige Schrift, unübersichtliches Layout, und um herauszufinden, ob ein Buch gerade
 verfügbar ist, musste ich jeden Treffer einzeln öffnen und wieder zurück. Irgendwann
-hatte ich genug und habe mir diese Erweiterung selbst gebaut – zuerst nur für mich,
+hatte ich genug und habe mir diese Erweiterung selbst gebaut. Zuerst nur für mich,
 jetzt gebe ich sie an alle weiter, denen es ähnlich geht.
 
 Wichtig zu wissen: Das ist mein eigenes, privates Projekt und KEIN offizielles Angebot
-der Stadtbibliothek Köln. Ich verändere nichts am Katalog der Bibliothek selbst – die
+der Stadtbibliothek Köln. Ich verändere nichts am Katalog der Bibliothek selbst. Die
 Erweiterung sorgt nur dafür, dass die Website in deinem eigenen Browser übersichtlicher
 aussieht und sich einfacher bedienen lässt.
 
@@ -65,12 +65,12 @@ WAS SIE KANN
 
 ✓ Verfügbarkeit auf einen Blick
 Bei jedem Treffer in der Trefferliste siehst du sofort, ob ein Titel gerade ausleihbar
-ist und in welcher Zweigstelle – ohne dass du jeden Titel einzeln öffnen musst. Ist
+ist und in welcher Zweigstelle, ohne dass du jeden Titel einzeln öffnen musst. Ist
 alles entliehen, siehst du gleich, ab wann es voraussichtlich wieder verfügbar ist.
 
 ✓ ISBN einfach eingeben
 Eine ISBN direkt einzutippen findet im normalen Katalog oft gar nichts. Diese
-Erweiterung erkennt eine ISBN automatisch und sucht richtig danach – mit oder ohne
+Erweiterung erkennt eine ISBN automatisch und sucht richtig danach, mit oder ohne
 Bindestriche.
 
 ✓ Mehr Treffer laden statt endlos blättern
@@ -94,10 +94,10 @@ ganz im Original aussehen, reicht ein Klick auf den Hauptschalter.
 DEINE DATEN BLEIBEN BEI DIR
 
 Diese Erweiterung sammelt keine Daten, hat keinen eigenen Server und sendet nichts an
-Dritte. Die einzige gespeicherte Information sind deine eigenen Anzeige-Einstellungen –
+Dritte. Die einzige gespeicherte Information sind deine eigenen Anzeige-Einstellungen,
 und die bleiben ausschließlich lokal in deinem Browser. Jede Anfrage, die die
 Erweiterung stellt (etwa um den Bestand oder weitere Treffer zu laden), geht
-ausschließlich an katalog.stbib-koeln.de – also genau dorthin, wo du dich beim
+ausschließlich an katalog.stbib-koeln.de, also genau dorthin, wo du dich beim
 Katalogisieren ohnehin schon befindest.
 
 WICHTIGER HINWEIS
@@ -132,7 +132,7 @@ gebraucht wird.
 ```
 Speichert ausschließlich die vom Nutzer gewählten Anzeige-Einstellungen (z. B. ob das
 Komfort-Design oder das dunkle Design aktiv ist) lokal im Browser. Es werden keine
-Daten an einen Server der Erweiterung übertragen – ein solcher Server existiert nicht.
+Daten an einen Server der Erweiterung übertragen. Ein solcher Server existiert nicht.
 ```
 
 **Host-Zugriff auf `katalog.stbib-koeln.de`:**
@@ -155,7 +155,7 @@ Diese Erweiterung erhebt, speichert und überträgt keine personenbezogenen Date
 gibt keinen eigenen Server. Die einzige gespeicherte Information sind die vom Nutzer
 selbst gewählten Anzeige-Einstellungen, gespeichert lokal im Browser über die
 Speicherfunktion von Chrome (chrome.storage.local). Alle Netzwerkanfragen der
-Erweiterung gehen ausschließlich an katalog.stbib-koeln.de – dieselbe Adresse, die der
+Erweiterung gehen ausschließlich an katalog.stbib-koeln.de, also an dieselbe Adresse, die der
 Browser ohnehin beim normalen Bedienen des Katalogs aufruft.
 ```
 
