@@ -59,6 +59,70 @@ h1 {
   margin: 0;
 }
 
+.search-form {
+  display: flex;
+  gap: 6px;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  font: inherit;
+  color: var(--stbib-text);
+  background: var(--stbib-bg-card);
+  border: 1px solid var(--stbib-border-strong);
+  border-radius: var(--stbib-radius);
+}
+
+.search-input::placeholder {
+  color: var(--stbib-text-muted);
+}
+
+.search-input:focus-visible,
+.search-button:focus-visible,
+.catalog-link:focus-visible {
+  outline: 2px solid var(--stbib-focus);
+  outline-offset: 2px;
+}
+
+.search-button {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--stbib-bg-header-bar);
+  border: 0;
+  border-radius: var(--stbib-radius);
+  cursor: pointer;
+}
+
+.search-button:hover {
+  filter: brightness(1.1);
+}
+
+.catalog-link {
+  display: inline-block;
+  margin: 8px 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--stbib-text-muted);
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.catalog-link:hover {
+  color: var(--stbib-text);
+  text-decoration: underline;
+}
+
+.panel--display {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--stbib-border);
+}
+
 .switch-row {
   display: flex;
   align-items: center;

@@ -430,19 +430,23 @@ a.SummaryFieldLink:hover {
   margin-top: 0.35rem !important;
 }
 
-/* Aktions-Spalte: kompakte „Panel“-Optik mit Trennlinien statt Einzelrahmen */
-table.browseList > tbody > tr > td[align="right"] {
+/*
+ * Aktions-Spalte: kompakte „Panel“-Optik mit Trennlinien statt Einzelrahmen.
+ * Das Portal verschachtelt die Zelle inzwischen in eine eigene Tabelle;
+ * `:has()` erkennt sie an den Aktionslinks statt an der Tabellentiefe.
+ */
+table.browseList td[align="right"]:has(> div a.SummaryActionLink) {
   vertical-align: top !important;
   width: 14.5rem !important;
   min-width: 12.5rem !important;
   max-width: 17.5rem !important;
 }
 
-table.browseList > tbody > tr > td[align="right"] div[style*="height:20px"] {
+table.browseList td[align="right"]:has(> div a.SummaryActionLink) div[style*="height:20px"] {
   display: none !important;
 }
 
-table.browseList > tbody > tr > td[align="right"] > div {
+table.browseList td[align="right"]:has(> div a.SummaryActionLink) > div {
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
@@ -461,7 +465,7 @@ table.browseList > tbody > tr > td[align="right"] > div {
 }
 
 /* Portal: Aktionslinks teils in innerem div */
-table.browseList > tbody > tr > td[align="right"] > div > div {
+table.browseList td[align="right"]:has(> div a.SummaryActionLink) > div > div {
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
@@ -486,7 +490,6 @@ table.browseList a.SummaryActionLink:visited {
   margin: 0 !important;
   border-radius: 0 !important;
   border: none !important;
-  border-bottom: 1px solid var(--stbib-border) !important;
   background: transparent !important;
   font-size: var(--stbib-fs-small) !important;
   font-weight: 500 !important;
@@ -498,9 +501,13 @@ table.browseList a.SummaryActionLink:visited {
     color 0.12s ease;
 }
 
-table.browseList > tbody > tr > td[align="right"] > div > a.SummaryActionLink:last-child,
-table.browseList > tbody > tr > td[align="right"] > div a.SummaryActionLink:last-of-type {
-  border-bottom: none !important;
+/*
+ * Trennlinie über jedem Folgelink statt unter jedem Link: Der letzte Link im
+ * DOM ist oft vom Portal ausgeblendet („Aus der Merkliste entfernen“), eine
+ * Linie unter dem letzten sichtbaren Link bliebe sonst stehen.
+ */
+table.browseList a.SummaryActionLink ~ a.SummaryActionLink {
+  border-top: 1px solid var(--stbib-border) !important;
 }
 
 table.browseList a.SummaryActionLink:hover {
@@ -518,7 +525,13 @@ table.browseList a.SummaryActionLink[style*="display:block"] {
   display: flex !important;
 }
 
-table.browseList > tbody > tr > td[align="right"] br {
+/* Vom Portal ausgeblendete Links (z. B. „Aus der Merkliste entfernen“) bleiben aus */
+table.browseList a.SummaryActionLink[style*="display:none"],
+table.browseList a.SummaryActionLink[style*="display: none"] {
+  display: none !important;
+}
+
+table.browseList td[align="right"]:has(> div a.SummaryActionLink) br {
   display: none !important;
 }
 

@@ -63,6 +63,52 @@ html[data-stbib-theme="dark"] body {
   background-color: var(--stbib-bg-page) !important;
 }
 
+/* Portal3-Seitencontainer: Iris09.css setzt #Global auf Weiß */
+html[data-stbib-theme="dark"] #Global {
+  background-color: var(--stbib-bg-page) !important;
+}
+
+/* Portal-Rand links am Inhaltsbereich (#e7e7e7) */
+html[data-stbib-theme="dark"] #ColCentre {
+  border-color: var(--stbib-border) !important;
+}
+
+/* Hilfe-Icon: schwarzes „?“ auf weißem GIF-Grund → hell auf transparent */
+html[data-stbib-theme="dark"] #Aide img {
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
+/* Aktionskasten der Detailseite (Vormerken, Drucken, Merkliste, Permalink) */
+html[data-stbib-theme="dark"] .DetailedActionBox {
+  background-color: var(--stbib-bg-card) !important;
+  border-color: var(--stbib-border) !important;
+}
+
+/* Portal-Klasse .darkLink ist fest schwarz (Detail- und Vormerkseite) */
+html[data-stbib-theme="dark"] .darkLink {
+  color: var(--stbib-text) !important;
+}
+
+html[data-stbib-theme="dark"] a.darkLink:link,
+html[data-stbib-theme="dark"] a.darkLink:visited {
+  color: var(--stbib-link) !important;
+}
+
+/* Nulltreffer-Meldung: Portal-Orange mit weißer Schrift ist im Dunkeln grell */
+html[data-stbib-theme="dark"] #ErrorAdviceRow,
+html[data-stbib-theme="dark"] #ErrorAdviceRow td {
+  color: var(--stbib-warn-text) !important;
+  background-color: var(--stbib-warn-bg) !important;
+}
+
+/* Erweiterte Suche: Eingabefelder mit Inline-Weiß */
+html[data-stbib-theme="dark"] input.SearchFormField {
+  color: var(--stbib-text) !important;
+  background-color: var(--stbib-input-bg) !important;
+  border-color: var(--stbib-border-strong) !important;
+}
+
 /* Portal: Zellen/Listenelemente mit bgcolor oder Inline-Styles neutralisieren */
 html[data-stbib-theme="dark"] table.browseList > tbody > tr > td {
   background-color: transparent !important;
@@ -81,9 +127,9 @@ html[data-stbib-theme="dark"] #pageContent table:not(.browseList) > tbody > tr >
 }
 
 /* Gegen helles bgcolor/#fff im Aktions-Panel (Portal-Inline) */
-html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"][bgcolor],
-html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div[bgcolor],
-html[data-stbib-theme="dark"] table.browseList > tbody > tr > td[align="right"] > div[style*="background"] {
+html[data-stbib-theme="dark"] table.browseList td[align="right"][bgcolor]:has(> div a.SummaryActionLink),
+html[data-stbib-theme="dark"] table.browseList td[align="right"]:has(> div a.SummaryActionLink) > div[bgcolor],
+html[data-stbib-theme="dark"] table.browseList td[align="right"]:has(> div a.SummaryActionLink) > div[style*="background"] {
   background-color: var(--stbib-bg-card) !important;
   background-image: none !important;
 }
