@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * Reine Logik ohne DOM-Zugriff: ISBN-Erkennung für die Suche und
- * Bestands-Parsing aus Permalink-Seiten.
+ * Reine Logik ohne DOM-Zugriff: ISBN-Erkennung für die Suche, Such-URLs für
+ * das Popup und Bestands-Parsing aus Permalink-Seiten.
  *
  * Bewusst eigenständig (ohne stbib.util und ohne `document`): Die Datei läuft
  * darum auch in Node-Tests (tests/unit) ohne Browser.
@@ -130,6 +130,31 @@ stbib.logic = (() => {
       return null;
     }
     return variants.map((isbn) => `isbn=${isbn}`).join(' or ');
+  }
+
+  // ------------------------------------------------------- Einstieg (Popup)
+
+  const CATALOG_URL = 'https://katalog.stbib-koeln.de/alswww2.dll/APS_ZONES';
+  const CATALOG_STYLE = 'Portal3';
+
+  /**
+   * Absolute Katalog-URL für den Einstieg von außen (Toolbar-Popup).
+   * Leere Eingabe → Schnellsuche; sonst direkt die Trefferliste.
+   * @param {{ isbnRewrite?: boolean }} [options] ISBN wie im Suchfeld umschreiben
+   */
+  function searchUrl(rawQuery, { isbnRewrite = true } = {}) {
+    const query = normalizeSpace(rawQuery);
+    if (!query) {
+      return `${CATALOG_URL}?${new URLSearchParams({ fn: 'QuickSearch', Style: CATALOG_STYLE })}`;
+    }
+    const params = new URLSearchParams({
+      fn: 'Search',
+      q: (isbnRewrite && rewrite(query)) || query,
+      Style: CATALOG_STYLE,
+      Lang: 'GER',
+      ResponseEncoding: 'utf-8',
+    });
+    return `${CATALOG_URL}?${params}`;
   }
 
   // -------------------------------------------------------------- Bestand
@@ -293,6 +318,7 @@ stbib.logic = (() => {
     isbn13To10,
     isbnVariants,
     rewrite,
+    searchUrl,
     formatDate,
     classifyStatus,
     parseItem,

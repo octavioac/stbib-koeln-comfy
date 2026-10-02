@@ -78,7 +78,11 @@ Bei ausgeschalteter Komfort-Ansicht werden alle injizierten Styles und Ergänzun
 
 ## Ein- und Ausschalten
 
-Nach der Installation erscheint das Erweiterungs-**Symbol** in der Werkzeugleiste. Per Klick öffnet sich ein **Popup**:
+Nach der Installation erscheint das Erweiterungs-**Symbol** in der Werkzeugleiste. Per Klick öffnet sich ein **Popup**.
+
+Ganz oben sitzt ein **Suchfeld**: Eingabe + Enter öffnet die Trefferliste direkt in einem neuen Tab; ohne Eingabe (oder über **„Katalog öffnen“**) landet man in der Schnellsuche. Eine ISBN wird dabei wie im Katalog-Suchfeld umgeschrieben, sofern **ISBN-Suche erkennen** an ist. Das Suchfeld funktioniert auch bei ausgeschaltetem Komfort-Design.
+
+Darunter die Schalter:
 
 | Schalter | Vorgabe | Wirkung |
 |---|---|---|
@@ -176,13 +180,13 @@ Für jede Zeile: Seite laden, **ohne** Überlappungen und mit bedienbaren Links/
 
 - `manifest.json` – MV3, Content-Scripts mit `all_frames: true`; Styles per `web_accessible_resources` nur bei „an“
 - `content.js` – Bootstrap: Styles einhängen, Theme setzen, Module anwenden, DOM beobachten
-- `src/logic.js` – reine Logik ohne DOM: ISBN-Erkennung und Bestands-Parsing (auch für Node-Tests)
+- `src/logic.js` – reine Logik ohne DOM: ISBN-Erkennung, Such-URLs fürs Popup und Bestands-Parsing (auch für Node-Tests)
 - `src/util.js` – gemeinsame Helfer: DOM-Knoten, Viewport, Reverter für reversible Eingriffe, `fetch` mit `DOMParser` und Parallelitätsbegrenzung
 - `src/facets.js` – Kachel- und Panel-Layout für Facetten, Suchfelder und entfernbare Filter-Chips
 - `src/holdings.js`, `src/loadmore.js`, `src/query.js` – Bestand, weitere Treffer und ISBN-Erkennung
 - `src/account.js` – Konto-Login mit reversiblen semantischen Ergänzungen
 - `src/pages.js` – Schnellsuche und Vormerkung mit reversiblen Seitenmarkern
-- `popup/` – Schalter im Toolbar-Popup
+- `popup/` – Katalogsuche und Schalter im Toolbar-Popup
 - `styles/tokens.css` – Design-Tokens; alle Farben der Komfort-Ansicht, dunkles Schema überschreibt nur Tokens (`theme-dark.css`)
 - `styles/base.css` … `components.css`, `results.css`, `pages.css`, `features.css`, `print.css` – aufeinander aufbauende Overrides; `pages.css` für Konto/Quicksearch/Vormerkung
 - `icons/` – fertige Icons (16/32/48/128 px)

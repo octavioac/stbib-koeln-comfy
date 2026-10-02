@@ -66,3 +66,28 @@ for (const [id, { key }] of Object.entries(TOGGLES)) {
     }
   });
 }
+
+/*
+ * Katalogsuche aus dem Popup: öffnet die Trefferliste in einem neuen Tab.
+ * `chrome.tabs.create` braucht keine zusätzliche Berechtigung. Die
+ * ISBN-Umschreibung folgt dem Schalter „ISBN-Suche erkennen“ – ein direkter
+ * Link umgeht das Suchfeld, an dem query.js sonst ansetzt.
+ */
+const SMART_QUERY_KEY = 'stbibSmartQuery';
+
+function openCatalog(url) {
+  chrome.tabs.create({ url }, () => window.close());
+}
+
+document.getElementById('stbib-search').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const query = document.getElementById('stbib-search-input').value;
+  chrome.storage.local.get({ [SMART_QUERY_KEY]: true }, (stored) => {
+    openCatalog(stbib.logic.searchUrl(query, { isbnRewrite: stored[SMART_QUERY_KEY] !== false }));
+  });
+});
+
+document.getElementById('stbib-open-catalog').addEventListener('click', (event) => {
+  event.preventDefault();
+  openCatalog(stbib.logic.searchUrl(''));
+});
