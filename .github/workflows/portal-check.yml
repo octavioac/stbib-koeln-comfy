@@ -1,0 +1,42 @@
+name: Portal-Check
+
+# Prüft täglich, ob der Katalog noch so aussieht, wie die Erweiterung ihn erwartet.
+# Scheitert der Check, wird ein Issue angelegt (GitHub mailt das an den Repo-Besitzer).
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  portal-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Reine HTTP-Abfragen, kein Browser nötig. Die Retries stehen in playwright.config.ts.
+      - name: Portal-Vertrag prüfen
+        run: npx playwright test tests/selectors.spec.ts
+      - name: Issue anlegen, wenn der Check scheitert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "Portal-Check in:title" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "Check scheitert weiterhin: $RUN_URL"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "Portal-Check fehlgeschlagen: Katalog hat sich vermutlich geändert" \
+              --body "Der tägliche Portal-Check ist gescheitert. Mindestens eine Klasse, ID oder ein URL-Parameter, von dem die Erweiterung abhängt, hat sich geändert oder das Portal war nicht erreichbar. Lauf: $RUN_URL"
+          fi
