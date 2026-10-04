@@ -350,6 +350,29 @@ table.browseList > tbody > tr > td {
   background-size: contain !important;
 }
 
+/*
+ * Das Portal legt das generische Material-Symbol (grauer „Buch“-Kasten) als
+ * Hintergrundbild unter das Cover und blendet das Cover per Skript erst ein,
+ * wenn es geladen ist. Der Platzhalter bleibt dann hinter dem Cover sichtbar.
+ * Sobald ein Cover da ist, den Platzhalter ausblenden und das Cover dezent
+ * als Karte darstellen. Ohne Cover bleibt das Material-Symbol erhalten.
+ */
+.SummaryImageCell > a > div:has(> img[id^="Bookcover_"]:not([style*="display:none"]):not([style*="display: none"])),
+.SummaryImageCellStripe > a > div:has(> img[id^="Bookcover_"]:not([style*="display:none"]):not([style*="display: none"])) {
+  background-image: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.SummaryImageCell img[id^="Bookcover_"]:not([style*="display:none"]):not([style*="display: none"]),
+.SummaryImageCellStripe img[id^="Bookcover_"]:not([style*="display:none"]):not([style*="display: none"]) {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 3px !important;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.25) !important;
+}
+
 .SummaryDataCell,
 .SummaryDataCellStripe {
   font-size: var(--stbib-fs-small) !important;
