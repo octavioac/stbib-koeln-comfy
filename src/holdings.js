@@ -60,7 +60,7 @@ stbib.holdings = (() => {
   /** @type {Map<string, Promise<Branch[]>>} recordId → Bestand (dedupliziert parallele Abfragen) */
   const cache = new Map();
 
-  let autoLoad = false;
+  let autoLoad = true;
 
   /**
    * @typedef {{area: string, signature: string, status: string, kind: 'available'|'onloan'|'other', dueDate: string}} Item

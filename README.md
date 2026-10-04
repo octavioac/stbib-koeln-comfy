@@ -34,7 +34,7 @@ Jede Trefferzeile bekommt darum eine Schaltfläche **„Bestand anzeigen“** (o
 
 Ein zweiter Klick auf **„Bestand je Zweigstelle“** klappt die Details auf: je Zweigstelle Signatur und Status der einzelnen Exemplare. Zweigstellen mit verfügbaren Exemplaren stehen oben.
 
-Mit **„Bestand automatisch laden“** im Popup lädt die Erweiterung alle Treffer der Seite sofort im Hintergrund. Das ist praktisch am Schreibtisch, im Mobilfunknetz aber besser ausgeschaltet, weil jeder Bestand eine zusätzliche Abfrage an den Katalog ist.
+Standardmäßig lädt die Erweiterung den Bestand aller Treffer der Seite sofort im Hintergrund (Schalter **„Bestand automatisch laden“** im Popup). Wer das nicht möchte, schaltet es im Popup aus; dann erscheinen nur die Schaltflächen, und der Bestand wird erst per Klick geladen.
 
 Technisch: Der **Permalink** eines Titels (`APS_ZONES?fn=ViewNotice&q=<ID>`) liefert den Bestand aller Zweigstellen bereits im HTML, ohne Session und von derselben Origin. `src/holdings.js` holt ihn per `fetch` (höchstens 4 parallel) und liest die Blöcke `stock_header_<code>` / `stock_content_<code>` aus.
 
@@ -89,7 +89,7 @@ Darunter die Schalter:
 | **Komfort-Design aktivieren** | an | Hauptschalter. Aus = alle injizierten Styles und Funktionen werden entfernt, der Katalog steht wieder im Original da. |
 | **Dunkles Design** | aus | Dunkles Farbschema (**Beta**). Greift nur bei aktivem Komfort-Design. |
 | **Bestand in der Trefferliste** | an | Schaltflächen und Bestandsanzeige je Treffer. |
-| **Bestand automatisch laden** | aus | Lädt den Bestand aller Treffer sofort, ohne Klick. |
+| **Bestand automatisch laden** | an | Lädt den Bestand aller Treffer sofort, ohne Klick. |
 | **„Mehr laden“ statt Blättern** | an | Leiste unter der Trefferliste. |
 | **ISBN-Suche erkennen** | an | Umschreibung der Eingabe und Hinweis auf Nulltrefferseiten. |
 

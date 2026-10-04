@@ -27,7 +27,7 @@ const STORAGE_DEFAULTS = {
   stbibModernEnabled: true,
   stbibDarkMode: false,
   stbibHoldings: true,
-  stbibHoldingsAuto: false,
+  stbibHoldingsAuto: true,
   stbibLoadMore: true,
   stbibSmartQuery: true,
 };

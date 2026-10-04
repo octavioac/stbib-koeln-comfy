@@ -5,7 +5,7 @@ const TOGGLES = {
   'stbib-toggle': { key: 'stbibModernEnabled', fallback: true },
   'stbib-toggle-dark': { key: 'stbibDarkMode', fallback: false },
   'stbib-toggle-holdings': { key: 'stbibHoldings', fallback: true },
-  'stbib-toggle-holdings-auto': { key: 'stbibHoldingsAuto', fallback: false },
+  'stbib-toggle-holdings-auto': { key: 'stbibHoldingsAuto', fallback: true },
   'stbib-toggle-loadmore': { key: 'stbibLoadMore', fallback: true },
   'stbib-toggle-smartquery': { key: 'stbibSmartQuery', fallback: true },
 };
